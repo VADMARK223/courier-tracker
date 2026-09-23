@@ -3,6 +3,8 @@ package com.example.couriertracker.ui.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.couriertracker.data.DataRepository
+import com.example.couriertracker.data.Operation
+import com.example.couriertracker.data.OperationWithCategory
 import com.example.couriertracker.ui.main.MainScreenUiState.Success
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +15,7 @@ import kotlinx.coroutines.flow.stateIn
 class MainScreenViewModel(dataRepository: DataRepository) : ViewModel() {
   val uiState: StateFlow<MainScreenUiState> =
     dataRepository.data
-      .map<List<String>, MainScreenUiState>(::Success)
+      .map<List< OperationWithCategory>, MainScreenUiState>(::Success)
       .catch { emit(MainScreenUiState.Error(it)) }
       .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainScreenUiState.Loading)
 }
@@ -23,5 +25,5 @@ sealed interface MainScreenUiState {
 
   data class Error(val throwable: Throwable) : MainScreenUiState
 
-  data class Success(val data: List<String>) : MainScreenUiState
+  data class Success(val data: List<OperationWithCategory>) : MainScreenUiState
 }

@@ -1,55 +1,92 @@
 package com.example.couriertracker.ui.main
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
-import com.example.couriertracker.data.DefaultDataRepository
-import com.example.couriertracker.theme.CourierTrackerTheme
+import com.example.couriertracker.AddCategory
+import com.example.couriertracker.AddOperation
+import com.example.couriertracker.data.DataRepository
+import com.example.couriertracker.data.OperationType
+import com.example.couriertracker.data.OperationWithCategory
 
 @Composable
 fun MainScreen(
-  onItemClick: (NavKey) -> Unit,
-  modifier: Modifier = Modifier,
-  viewModel: MainScreenViewModel = viewModel { MainScreenViewModel(DefaultDataRepository()) },
+    onItemClick: (NavKey) -> Unit,
+    repository: DataRepository,
 ) {
-  val state by viewModel.uiState.collectAsStateWithLifecycle()
-  when (state) {
-    MainScreenUiState.Loading -> {
-      // Blank
+
+    val viewModel: MainScreenViewModel = viewModel { MainScreenViewModel(repository) }
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    when (state) {
+        MainScreenUiState.Loading -> {
+            // Blank
+        }
+
+        is MainScreenUiState.Success -> {
+            MainScreen(
+                operations = (state as MainScreenUiState.Success).data,
+                onItemClick = onItemClick,
+            )
+        }
+
+        is MainScreenUiState.Error -> {
+            Text("Error loading data: ${(state as MainScreenUiState.Error).throwable.message}")
+        }
     }
-    is MainScreenUiState.Success -> {
-      MainScreen(data = (state as MainScreenUiState.Success).data, modifier = modifier)
+}
+
+@Composable
+internal fun MainScreen(
+    operations: List<OperationWithCategory>,
+    onItemClick: (NavKey) -> Unit,
+    modifier: Modifier = Modifier
+) {
+
+    val balance: Long = operations.sumOf { item ->
+        if (item.operation.type == OperationType.INCOME) {
+            item.operation.amount
+        } else {
+            -item.operation.amount
+        }
     }
-    is MainScreenUiState.Error -> {
-      Text("Error loading data: ${(state as MainScreenUiState.Error).throwable.message}")
+
+
+    Column(modifier) {
+        Text("Баланс: ${formatMoney(balance)}")
+
+        HorizontalDivider()
+
+        operations.forEach { item ->
+            Text(
+                text = "${item.category?.name ?: "Без категории"}: " + formatMoney(item.operation.amount)
+            )
+        }
+
+        Button(
+            onClick = { onItemClick(AddCategory) },
+        ) {
+            Text("Добавить категорию")
+        }
+
+        Button(
+            onClick = { onItemClick(AddOperation) },
+        ) {
+            Text("Добавить операцию")
+        }
     }
-  }
 }
 
-@Composable
-internal fun MainScreen(data: List<String>, modifier: Modifier = Modifier) {
-  Column(modifier) { data.forEach { Greeting(it) } }
-}
+fun formatMoney(amount: Long): String {
+    val rubles = amount / 100
+    val kopecks = kotlin.math.abs(amount % 100)
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-  Text(text = "Hello $name!", modifier = modifier)
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainScreenPreview() {
-  CourierTrackerTheme { MainScreen(listOf("Android")) }
-}
-
-@Preview(showBackground = true, widthDp = 340)
-@Composable
-fun MainScreenPortraitPreview() {
-  CourierTrackerTheme { MainScreen(listOf("Android")) }
+    return "$rubles,${kopecks.toString().padStart(2, '0')} ₽"
 }
