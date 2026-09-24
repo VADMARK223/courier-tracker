@@ -1,6 +1,10 @@
 package com.example.couriertracker.ui.main
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -13,9 +17,11 @@ import androidx.navigation3.runtime.NavKey
 import com.example.couriertracker.AddCategory
 import com.example.couriertracker.AddOperation
 import com.example.couriertracker.data.DataRepository
+import com.example.couriertracker.data.Operation
 import com.example.couriertracker.data.OperationType
 import com.example.couriertracker.data.OperationWithCategory
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(
     onItemClick: (NavKey) -> Unit,
@@ -34,6 +40,7 @@ fun MainScreen(
             MainScreen(
                 operations = (state as MainScreenUiState.Success).data,
                 onItemClick = onItemClick,
+                onDeleteOperation = viewModel::deleteOperation
             )
         }
 
@@ -43,10 +50,12 @@ fun MainScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 internal fun MainScreen(
     operations: List<OperationWithCategory>,
     onItemClick: (NavKey) -> Unit,
+    onDeleteOperation: (Operation) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -64,11 +73,12 @@ internal fun MainScreen(
 
         HorizontalDivider()
 
-        operations.forEach { item ->
-            Text(
-                text = "${item.category?.name ?: "Без категории"}: " + formatMoney(item.operation.amount)
-            )
+        LazyColumn {
+            items(operations) { item ->
+                OperationItem(item = item, onDelete = onDeleteOperation)
+            }
         }
+
 
         Button(
             onClick = { onItemClick(AddCategory) },

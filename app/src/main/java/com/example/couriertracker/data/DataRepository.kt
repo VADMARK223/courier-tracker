@@ -9,6 +9,8 @@ interface DataRepository {
     fun getCategoriesByType(type: OperationType): Flow<List<Category>>
 
     suspend fun addOperation(operation: Operation)
+
+    suspend fun deleteOperation(operation: Operation)
 }
 
 class DefaultDataRepository(
@@ -29,5 +31,9 @@ class DefaultDataRepository(
 
     override suspend fun addOperation(operation: Operation) {
         operationDao.insert(operation)
+    }
+
+    override suspend fun deleteOperation(operation: Operation) {
+        operationDao.delete(operation)
     }
 }
