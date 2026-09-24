@@ -43,8 +43,6 @@ fun AddCategoryScreen(
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
-
-
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -58,7 +56,7 @@ fun AddCategoryScreen(
             }
 
             Text(
-                text = "Новая операция",
+                text = "Новая категория",
                 style = MaterialTheme.typography.headlineMedium
             )
         }

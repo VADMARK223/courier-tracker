@@ -13,6 +13,7 @@ import androidx.room3.Room
 import com.example.couriertracker.data.AppDatabase
 import com.example.couriertracker.data.DefaultDataRepository
 import com.example.couriertracker.data.MIGRATION_1_2
+import com.example.couriertracker.data.SettingsRepository
 import com.example.couriertracker.ui.AppScreen
 import com.example.couriertracker.ui.category.AddCategoryScreen
 import com.example.couriertracker.ui.main.MainScreen
@@ -25,10 +26,11 @@ import kotlinx.coroutines.launch
 fun MainNavigation() {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val applicationContext = context.applicationContext
 
     val database = remember {
         Room.databaseBuilder<AppDatabase>(
-            context = context.applicationContext,
+            context = applicationContext,
             name = "courier_tacker.db"
         )
             .addMigrations(MIGRATION_1_2)
@@ -37,6 +39,10 @@ fun MainNavigation() {
 
     val repository = remember {
         DefaultDataRepository(database.categoryDao(), database.operationDao())
+    }
+
+    val settingsRepository = remember {
+        SettingsRepository(applicationContext)
     }
 
     val backStack = rememberNavBackStack(Main)
@@ -83,6 +89,7 @@ fun MainNavigation() {
                                 }
                             },
                             repository = repository,
+                            settingsRepository = settingsRepository
                         )
                     }
                 }

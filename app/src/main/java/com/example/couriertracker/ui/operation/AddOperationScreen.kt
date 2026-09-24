@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -37,12 +39,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.couriertracker.data.DataRepository
 import com.example.couriertracker.data.Operation
 import com.example.couriertracker.data.OperationType
+import com.example.couriertracker.data.SettingsRepository
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -50,13 +51,21 @@ fun AddOperationScreen(
     onBack: () -> Unit,
     onSave: (Operation) -> Unit,
     modifier: Modifier = Modifier,
-    repository: DataRepository
+    repository: DataRepository,
+    settingsRepository: SettingsRepository
 ) {
-    var operationType by remember {
-        mutableStateOf(OperationType.EXPENSE)
+
+    val viewModel: AddOperationViewModel = viewModel {
+        AddOperationViewModel(
+            repository = repository,
+            settingsRepository = settingsRepository
+        )
     }
-    val viewModel: AddOperationViewModel = viewModel { AddOperationViewModel(repository) }
-    val categories by viewModel.getRepositories(operationType).collectAsStateWithLifecycle(emptyList())
+
+    val operationType by viewModel.lastOperationType.collectAsStateWithLifecycle(initialValue = OperationType.EXPENSE)
+
+    val categories by viewModel.getRepositories(operationType)
+        .collectAsStateWithLifecycle(emptyList())
 
     var selectedCategoryId by remember {
         mutableStateOf<Long?>(null)
@@ -107,7 +116,7 @@ fun AddOperationScreen(
                 RadioButton(
                     selected = operationType == OperationType.EXPENSE,
                     onClick = {
-                        operationType = OperationType.EXPENSE
+                        viewModel.saveLastOperationType(OperationType.EXPENSE)
                         selectedCategoryId = null
                     }
                 )
@@ -124,7 +133,7 @@ fun AddOperationScreen(
                 RadioButton(
                     selected = operationType == OperationType.INCOME,
                     onClick = {
-                        operationType = OperationType.INCOME
+                        viewModel.saveLastOperationType(OperationType.INCOME)
                         selectedCategoryId = null
                     }
                 )
@@ -135,7 +144,7 @@ fun AddOperationScreen(
 
 
         categories.forEach { category ->
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
@@ -252,9 +261,3 @@ fun AddOperationScreen(
         }
     }
 }
-
-/*@Preview(showBackground = true)
-@Composable
-fun AddOperationScreenPreview() {
-    CourierTrackerTheme { AddOperationScreen() }
-}*/
