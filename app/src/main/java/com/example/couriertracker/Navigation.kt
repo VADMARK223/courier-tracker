@@ -2,9 +2,11 @@ package com.example.couriertracker
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -14,6 +16,7 @@ import com.example.couriertracker.data.AppDatabase
 import com.example.couriertracker.data.DefaultDataRepository
 import com.example.couriertracker.data.MIGRATION_1_2
 import com.example.couriertracker.data.SettingsRepository
+import com.example.couriertracker.ui.AppScaffold
 import com.example.couriertracker.ui.AppScreen
 import com.example.couriertracker.ui.category.AddCategoryScreen
 import com.example.couriertracker.ui.main.MainScreen
@@ -47,52 +50,68 @@ fun MainNavigation() {
 
     val backStack = rememberNavBackStack(Main)
 
-    NavDisplay(
-        backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
-        entryProvider =
-            entryProvider {
-                entry<Main> {
-                    AppScreen {
-                        MainScreen(
-                            onItemClick = { navKey -> backStack.add(navKey) },
-                            repository = repository,
-                        )
-                    }
+    AppScaffold(
+        currentScreen = backStack.last(),
+        onMainClick = {
+            backStack.clear()
+            backStack.add(Main)
+        },
+        onCategoryClick = {
+            backStack.add(AddCategory)
+        },
+        onOperationClick = {
+            backStack.add(AddOperation)
+        },
+        onSettingsClick = {}
+    ) { paddingValues ->
+        NavDisplay(
+            backStack = backStack,
+            onBack = { backStack.removeLastOrNull() },
+            modifier = Modifier.padding(paddingValues),
+            entryProvider =
+                entryProvider {
+                    entry<Main> {
+                        AppScreen {
+                            MainScreen(
+                                onItemClick = { navKey -> backStack.add(navKey) },
+                                repository = repository,
+                            )
+                        }
 
-                }
-                entry<AddCategory> {
-                    AppScreen {
-                        AddCategoryScreen(
-                            onBack = {
-                                backStack.removeLastOrNull()
-                            },
-                            onSave = { category ->
-                                scope.launch {
-                                    repository.addCategory(category)
-                                    backStack.removeLastOrNull()
-                                }
-                            }
-                        )
                     }
-                }
-                entry<AddOperation> {
-                    AppScreen {
-                        AddOperationScreen(
-                            onBack = {
-                                backStack.removeLastOrNull()
-                            },
-                            onSave = { operation ->
-                                scope.launch {
-                                    repository.addOperation(operation)
+                    entry<AddCategory> {
+                        AppScreen {
+                            AddCategoryScreen(
+                                onBack = {
                                     backStack.removeLastOrNull()
+                                },
+                                onSave = { category ->
+                                    scope.launch {
+                                        repository.addCategory(category)
+                                        backStack.removeLastOrNull()
+                                    }
                                 }
-                            },
-                            repository = repository,
-                            settingsRepository = settingsRepository
-                        )
+                            )
+                        }
                     }
-                }
-            },
-    )
+                    entry<AddOperation> {
+                        AppScreen {
+                            AddOperationScreen(
+                                onBack = {
+                                    backStack.removeLastOrNull()
+                                },
+                                onSave = { operation ->
+                                    scope.launch {
+                                        repository.addOperation(operation)
+                                        backStack.removeLastOrNull()
+                                    }
+                                },
+                                repository = repository,
+                                settingsRepository = settingsRepository
+                            )
+                        }
+                    }
+                },
+        )
+    }
 }

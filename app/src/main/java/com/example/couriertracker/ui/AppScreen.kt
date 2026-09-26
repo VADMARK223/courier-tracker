@@ -15,7 +15,7 @@ fun AppScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .safeDrawingPadding()
+//            .safeDrawingPadding()
             .padding(16.dp)
     ) {
         content()
