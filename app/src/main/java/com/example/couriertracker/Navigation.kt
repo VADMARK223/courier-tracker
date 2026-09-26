@@ -15,12 +15,15 @@ import androidx.room3.Room
 import com.example.couriertracker.data.database.AppDatabase
 import com.example.couriertracker.data.repository.DefaultDataRepository
 import com.example.couriertracker.data.database.MIGRATION_1_2
+import com.example.couriertracker.data.database.MIGRATION_2_3
 import com.example.couriertracker.data.repository.SettingsRepository
 import com.example.couriertracker.ui.AppScaffold
 import com.example.couriertracker.ui.AppScreen
 import com.example.couriertracker.ui.category.AddCategoryScreen
 import com.example.couriertracker.ui.main.MainScreen
 import com.example.couriertracker.ui.operation.AddOperationScreen
+import com.example.couriertracker.ui.service.AddServiceScreen
+import com.example.couriertracker.ui.slot.AddSlotScreen
 import kotlinx.coroutines.launch
 
 
@@ -37,11 +40,16 @@ fun MainNavigation() {
             name = "courier_tacker.db"
         )
             .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_2_3)
             .build()
     }
 
     val repository = remember {
-        DefaultDataRepository(database.categoryDao(), database.operationDao())
+        DefaultDataRepository(
+            database.serviceDao(),
+            database.slotDao(),
+            database.categoryDao(),
+            database.operationDao())
     }
 
     val settingsRepository = remember {
@@ -78,6 +86,36 @@ fun MainNavigation() {
                             )
                         }
 
+                    }
+                    entry<AddService> {
+                        AppScreen {
+                            AddServiceScreen(
+                                onBack = {
+                                    backStack.removeLastOrNull()
+                                },
+                                onSave = { service ->
+                                    scope.launch {
+                                        repository.addService(service)
+                                        backStack.removeLastOrNull()
+                                    }
+                                }
+                            )
+                        }
+                    }
+                    entry<AddSlot> {
+                        AppScreen {
+                            AddSlotScreen(
+                                onBack = {
+                                    backStack.removeLastOrNull()
+                                },
+                                onSave = { slot ->
+                                    scope.launch {
+                                        repository.addSlot(slot)
+                                        backStack.removeLastOrNull()
+                                    }
+                                }
+                            )
+                        }
                     }
                     entry<AddCategory> {
                         AppScreen {

@@ -7,6 +7,12 @@ import kotlinx.serialization.Serializable
 data object Main : NavKey
 
 @Serializable
+data object AddService : NavKey
+
+@Serializable
+data object AddSlot : NavKey
+
+@Serializable
 data object AddCategory : NavKey
 
 @Serializable

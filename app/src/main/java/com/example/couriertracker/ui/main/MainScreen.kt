@@ -16,6 +16,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import com.example.couriertracker.AddCategory
 import com.example.couriertracker.AddOperation
+import com.example.couriertracker.AddService
+import com.example.couriertracker.AddSlot
 import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.data.model.Operation
 import com.example.couriertracker.data.model.OperationType
@@ -79,6 +81,17 @@ internal fun MainScreen(
             }
         }
 
+        Button(
+            onClick = { onItemClick(AddService) },
+        ) {
+            Text("Добавить сервис")
+        }
+
+        Button(
+            onClick = { onItemClick(AddSlot) },
+        ) {
+            Text("Добавить слот")
+        }
 
         Button(
             onClick = { onItemClick(AddCategory) },
