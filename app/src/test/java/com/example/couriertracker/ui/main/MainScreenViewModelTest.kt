@@ -1,6 +1,6 @@
 package com.example.couriertracker.ui.main
 
-import com.example.couriertracker.data.DataRepository
+import com.example.couriertracker.data.repository.DataRepository
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first

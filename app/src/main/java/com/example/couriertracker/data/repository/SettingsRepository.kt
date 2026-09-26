@@ -1,10 +1,11 @@
-package com.example.couriertracker.data
+package com.example.couriertracker.data.repository
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.couriertracker.data.model.OperationType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -25,15 +26,15 @@ class SettingsRepository(
                 throw exception
             }
         }
-        .map{ preferences ->
-        val savedValue = preferences[lastOperationTypeKey]
+        .map { preferences ->
+            val savedValue = preferences[lastOperationTypeKey]
 
-        if (savedValue != null) {
-            OperationType.valueOf(savedValue)
-        } else {
-            OperationType.EXPENSE
+            if (savedValue != null) {
+                OperationType.valueOf(savedValue)
+            } else {
+                OperationType.EXPENSE
+            }
         }
-    }
 
     suspend fun saveLastOperationType(type: OperationType) {
         context.dataStore.edit { preferences ->

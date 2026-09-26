@@ -2,11 +2,10 @@ package com.example.couriertracker.ui.operation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.couriertracker.data.Category
-import com.example.couriertracker.data.DataRepository
-import com.example.couriertracker.data.OperationType
-import com.example.couriertracker.data.SettingsRepository
+import com.example.couriertracker.data.model.Category
+import com.example.couriertracker.data.repository.DataRepository
+import com.example.couriertracker.data.model.OperationType
+import com.example.couriertracker.data.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 

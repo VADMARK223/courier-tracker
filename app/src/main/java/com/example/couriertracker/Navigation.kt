@@ -12,10 +12,10 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.room3.Room
-import com.example.couriertracker.data.AppDatabase
-import com.example.couriertracker.data.DefaultDataRepository
-import com.example.couriertracker.data.MIGRATION_1_2
-import com.example.couriertracker.data.SettingsRepository
+import com.example.couriertracker.data.database.AppDatabase
+import com.example.couriertracker.data.repository.DefaultDataRepository
+import com.example.couriertracker.data.database.MIGRATION_1_2
+import com.example.couriertracker.data.repository.SettingsRepository
 import com.example.couriertracker.ui.AppScaffold
 import com.example.couriertracker.ui.AppScreen
 import com.example.couriertracker.ui.category.AddCategoryScreen

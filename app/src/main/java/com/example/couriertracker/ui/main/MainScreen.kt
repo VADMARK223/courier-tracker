@@ -16,10 +16,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import com.example.couriertracker.AddCategory
 import com.example.couriertracker.AddOperation
-import com.example.couriertracker.data.DataRepository
-import com.example.couriertracker.data.Operation
-import com.example.couriertracker.data.OperationType
-import com.example.couriertracker.data.OperationWithCategory
+import com.example.couriertracker.data.repository.DataRepository
+import com.example.couriertracker.data.model.Operation
+import com.example.couriertracker.data.model.OperationType
+import com.example.couriertracker.data.model.OperationWithCategory
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

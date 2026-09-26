@@ -23,8 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.couriertracker.data.Category
-import com.example.couriertracker.data.OperationType
+import com.example.couriertracker.data.model.Category
+import com.example.couriertracker.data.model.OperationType
 
 @Composable
 fun AddCategoryScreen(

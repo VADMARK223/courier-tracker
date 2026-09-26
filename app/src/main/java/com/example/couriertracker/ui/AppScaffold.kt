@@ -5,7 +5,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Report
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -42,15 +44,15 @@ fun AppScaffold(
                 )
 
                 NavigationBarItem(
-                    selected = currentScreen == AddCategory,
-                    onClick = onCategoryClick,
+                    selected = false,
+                    onClick = { },
                     icon = {
                         Icon(
-                            imageVector = Icons.Default.Category,
-                            contentDescription = "Категории"
+                            imageVector = Icons.Default.Timeline,
+                            contentDescription = "Слоты"
                         )
                     },
-                    label = { Text("Категории") }
+                    label = { Text("Слоты") }
                 )
 
                 NavigationBarItem(
@@ -63,6 +65,30 @@ fun AppScaffold(
                         )
                     },
                     label = { Text("Операции") }
+                )
+
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Report,
+                            contentDescription = "Отчеты"
+                        )
+                    },
+                    label = { Text("Отчеты") }
+                )
+
+                NavigationBarItem(
+                    selected = currentScreen == AddCategory,
+                    onClick = onCategoryClick,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Category,
+                            contentDescription = "Категории"
+                        )
+                    },
+                    label = { Text("Категории") }
                 )
 
                 NavigationBarItem(

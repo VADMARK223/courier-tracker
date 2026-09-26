@@ -1,4 +1,4 @@
-package com.example.couriertracker.data
+package com.example.couriertracker.data.model
 
 enum class OperationType {
     INCOME,

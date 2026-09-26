@@ -1,4 +1,4 @@
-package com.example.couriertracker.data
+package com.example.couriertracker.data.database
 
 import androidx.room3.migration.Migration
 import androidx.sqlite.SQLiteConnection

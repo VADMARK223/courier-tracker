@@ -15,9 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.couriertracker.data.Operation
-import com.example.couriertracker.data.OperationType
-import com.example.couriertracker.data.OperationWithCategory
+import com.example.couriertracker.data.model.Operation
+import com.example.couriertracker.data.model.OperationType
+import com.example.couriertracker.data.model.OperationWithCategory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

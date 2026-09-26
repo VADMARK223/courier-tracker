@@ -2,9 +2,9 @@ package com.example.couriertracker.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.couriertracker.data.DataRepository
-import com.example.couriertracker.data.Operation
-import com.example.couriertracker.data.OperationWithCategory
+import com.example.couriertracker.data.repository.DataRepository
+import com.example.couriertracker.data.model.Operation
+import com.example.couriertracker.data.model.OperationWithCategory
 import com.example.couriertracker.ui.main.MainScreenUiState.Success
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
