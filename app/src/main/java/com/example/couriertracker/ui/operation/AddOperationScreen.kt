@@ -2,9 +2,7 @@ package com.example.couriertracker.ui.operation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,9 +34,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.data.model.Operation
 import com.example.couriertracker.data.model.OperationType
+import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.data.repository.SettingsRepository
 import java.time.Instant
 import java.time.LocalDate
@@ -176,16 +174,6 @@ fun AddOperationScreen(
             ),
             modifier = Modifier.fillMaxWidth()
         )
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    showDatePicker = true
-                }
-        ) {
-
-        }
 
         OutlinedButton(
             onClick = {
