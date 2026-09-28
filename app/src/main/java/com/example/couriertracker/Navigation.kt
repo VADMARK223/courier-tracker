@@ -56,7 +56,8 @@ fun MainNavigation() {
         SettingsRepository(applicationContext)
     }
 
-    val backStack = rememberNavBackStack(Main)
+//    val backStack = rememberNavBackStack(Main)
+    val backStack = rememberNavBackStack(AddSlot)
 
     AppScaffold(
         currentScreen = backStack.last(),

@@ -25,6 +25,7 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.couriertracker.data.model.Slot
+import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -45,21 +47,50 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun AddSlotScreen(
     onBack: () -> Unit,
-    onSave: (Slot) -> Unit, // Предполагается, что Slot принимает LocalDateTime/LocalTime или String
+    onSave: (Slot) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Состояния для даты и времени
     var date by remember { mutableStateOf(LocalDate.now()) }
     var startTime by remember { mutableStateOf(LocalTime.of(9, 0)) }
     var endTime by remember { mutableStateOf(LocalTime.of(18, 0)) }
 
-    // Состояния видимости диалогов
     var showDatePicker by remember { mutableStateOf(false) }
     var showStartTimePicker by remember { mutableStateOf(false) }
     var showEndTimePicker by remember { mutableStateOf(false) }
 
     val timeFormatter = remember { DateTimeFormatter.ofPattern("HH:mm") }
     val dateFormatter = remember { DateTimeFormatter.ofPattern("dd.MM.yyyy") }
+
+    val slotValidation by remember {
+        derivedStateOf {
+            val duration = Duration.between(startTime, endTime)
+
+            if (duration.isNegative || duration.isZero) {
+                return@derivedStateOf SlotState(
+                    isValid = false,
+                    displayText = "",
+                    errorText = "Период должен быть больше нуля"
+                )
+            }
+
+            val hours = duration.toHours()
+            val minutes = duration.toMinutes() % 60
+
+            val text = when {
+                hours <= 0L && minutes <= 0L -> ""
+                hours == 0L -> "($minutes м.) "
+                minutes == 0L -> "($hours ч.) "
+                else -> "($hours ч. $minutes м.) "
+            }
+
+            SlotState(
+                isValid = true,
+                displayText = text,
+                errorText = null
+            )
+
+        }
+    }
 
     Column(
         modifier = modifier.fillMaxWidth()
@@ -75,14 +106,13 @@ fun AddSlotScreen(
                 )
             }
             Text(
-                text = "Новый слот",
+                text = "Новый слот ${slotValidation.displayText}",
                 style = MaterialTheme.typography.headlineMedium
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Кнопка выбора даты
         Text(text = "Дата:", style = MaterialTheme.typography.labelLarge)
         OutlinedButton(
             onClick = { showDatePicker = true },
@@ -93,7 +123,6 @@ fun AddSlotScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Выбор временного интервала (Рядом друг с другом)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -118,12 +147,19 @@ fun AddSlotScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+//        Spacer(modifier = Modifier.height(32.dp))
 
-        // Кнопка Сохранить
+        if (!slotValidation.isValid && slotValidation.errorText != null) {
+            Text(
+                text = slotValidation.errorText!!,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+
         Button(
+            enabled = slotValidation.isValid,
             onClick = {
-                // Комбинируем дату и время (если объект Slot требует LocalDateTime)
                 val startDateTime = LocalDateTime.of(date, startTime)
                 val endDateTime = LocalDateTime.of(date, endTime)
 
