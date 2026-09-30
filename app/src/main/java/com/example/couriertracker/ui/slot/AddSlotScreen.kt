@@ -195,15 +195,13 @@ fun AddSlotScreen(
                 val startDateTime = LocalDateTime.of(date, startTime)
                 val endDateTime = LocalDateTime.of(date, endTime)
 
-                if (selectedServiceId != null) {
-                    onSave(
-                        Slot(
-                            serviceId = selectedServiceId!!,
-                            startTime = startDateTime,
-                            endTime = endDateTime
-                        )
+                onSave(
+                    Slot(
+                        serviceId = selectedServiceId!!,
+                        startTime = startDateTime,
+                        endTime = endDateTime
                     )
-                }
+                )
             },
             modifier = Modifier.fillMaxWidth()
         ) {
