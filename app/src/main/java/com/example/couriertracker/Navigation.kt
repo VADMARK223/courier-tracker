@@ -106,6 +106,7 @@ fun MainNavigation() {
                     entry<AddSlot> {
                         AppScreen {
                             AddSlotScreen(
+                                repository = repository,
                                 onBack = {
                                     backStack.removeLastOrNull()
                                 },

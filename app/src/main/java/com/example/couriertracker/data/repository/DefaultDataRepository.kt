@@ -24,6 +24,10 @@ class DefaultDataRepository(
         serviceDao.insert(service)
     }
 
+    override fun getServices(): Flow<List<Service>> {
+        return serviceDao.getAll()
+    }
+
     override suspend fun addSlot(slot: Slot) {
         slotDao.insert(slot)
     }

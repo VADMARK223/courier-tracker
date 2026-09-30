@@ -10,7 +10,7 @@ data class Slot(
 
     val serviceId: Long,
 
-    val startTime:Long,
+    val startTime: Long,
 
-    val endTime:Long,
+    val endTime: Long,
 )

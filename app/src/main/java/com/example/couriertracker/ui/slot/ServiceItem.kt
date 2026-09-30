@@ -1,44 +1,35 @@
-package com.example.couriertracker.ui.main
+package com.example.couriertracker.ui.slot
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.couriertracker.data.model.Operation
-import com.example.couriertracker.data.model.OperationType
-import com.example.couriertracker.data.model.OperationWithCategory
-import java.time.LocalDate
+import com.example.couriertracker.data.model.Service
 import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun OperationItem(
-    item: OperationWithCategory,
-    onDelete: (Operation) -> Unit,
+fun ServiceItem(
+    item: Service,
+    isSelected : Boolean,
+    onSelected: () ->Unit,
+    onDelete: (Service) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val operation = item.operation
-
-    val amount = if (operation.type == OperationType.INCOME) {
-        operation.amount
-    } else {
-        -operation.amount
-    }
-
-    val date = LocalDate.ofEpochDay(operation.date)
-
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
@@ -47,31 +38,32 @@ fun OperationItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = item.category?.name ?: "Без категории"
-            )
+            Row(
+                modifier = Modifier.clickable{ onSelected()},
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = isSelected,
+                    onClick = onSelected
+                )
+
+                Text(item.name)
+            }
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = formatMoney(amount), style = MaterialTheme.typography.bodyLarge)
-
                 IconButton(
                     onClick = {
-                        onDelete(operation)
+                        onDelete(item)
                     }
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Удалить операцию"
+                        contentDescription = "Удалить сервис"
                     )
                 }
             }
         }
     }
-
-    Text(
-        text = date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-        style = MaterialTheme.typography.bodySmall
-    )
 }

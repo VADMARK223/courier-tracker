@@ -33,7 +33,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.couriertracker.data.model.Slot
+import com.example.couriertracker.data.repository.DataRepository
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
@@ -48,11 +51,22 @@ import java.time.format.DateTimeFormatter
 fun AddSlotScreen(
     onBack: () -> Unit,
     onSave: (Slot) -> Unit,
+    repository: DataRepository,
     modifier: Modifier = Modifier
 ) {
+    var selectedServiceId by remember { mutableStateOf<Long?>(null) }
     var date by remember { mutableStateOf(LocalDate.now()) }
     var startTime by remember { mutableStateOf(LocalTime.of(9, 0)) }
     var endTime by remember { mutableStateOf(LocalTime.of(18, 0)) }
+
+    val viewModel: AddSlotViewModel = viewModel {
+        AddSlotViewModel(
+            repository = repository
+        )
+    }
+
+    val services by viewModel.getServices()
+        .collectAsStateWithLifecycle(emptyList())
 
     var showDatePicker by remember { mutableStateOf(false) }
     var showStartTimePicker by remember { mutableStateOf(false) }
@@ -63,6 +77,14 @@ fun AddSlotScreen(
 
     val slotValidation by remember {
         derivedStateOf {
+            if (selectedServiceId == null) {
+                return@derivedStateOf SlotState(
+                    isValid = false,
+                    displayText = "",
+                    errorText = "Необходимо выбрать сервис"
+                )
+            }
+
             val duration = Duration.between(startTime, endTime)
 
             if (duration.isNegative || duration.isZero) {
@@ -95,7 +117,6 @@ fun AddSlotScreen(
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
-        // Шапка с кнопкой назад
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -112,6 +133,17 @@ fun AddSlotScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        services.forEach { service ->
+            ServiceItem(
+                item = service,
+                onDelete = {},
+                isSelected = service.id == selectedServiceId,
+                onSelected = {
+                    selectedServiceId = service.id
+                }
+            )
+        }
 
         Text(text = "Дата:", style = MaterialTheme.typography.labelLarge)
         OutlinedButton(
@@ -163,15 +195,21 @@ fun AddSlotScreen(
                 val startDateTime = LocalDateTime.of(date, startTime)
                 val endDateTime = LocalDateTime.of(date, endTime)
 
-                // Передайте данные в соответствии с вашей структурой Slot
-                // Например: onSave(Slot(start = startDateTime, end = endDateTime))
+                if (selectedServiceId != null) {
+                    onSave(
+                        Slot(
+                            serviceId = selectedServiceId!!,
+                            startTime = startDateTime,
+                            endTime = endDateTime
+                        )
+                    )
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Сохранить")
         }
 
-        // --- ДИАЛОГ ВЫБОРА ДАТЫ ---
         if (showDatePicker) {
             val datePickerState = rememberDatePickerState()
             DatePickerDialog(
@@ -196,7 +234,6 @@ fun AddSlotScreen(
             }
         }
 
-        // --- ДИАЛОГ ВЫБОРА ВРЕМЕНИ НАЧАЛА ---
         if (showStartTimePicker) {
             val timePickerState = rememberTimePickerState(
                 initialHour = startTime.hour,
@@ -220,7 +257,6 @@ fun AddSlotScreen(
             )
         }
 
-        // --- ДИАЛОГ ВЫБОРА ВРЕМЕНИ ОКОНЧАНИЯ ---
         if (showEndTimePicker) {
             val timePickerState = rememberTimePickerState(
                 initialHour = endTime.hour,

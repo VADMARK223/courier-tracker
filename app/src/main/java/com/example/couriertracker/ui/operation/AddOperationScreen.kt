@@ -2,6 +2,7 @@ package com.example.couriertracker.ui.operation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -143,6 +144,9 @@ fun AddOperationScreen(
 
         categories.forEach { category ->
             Row(
+                modifier = Modifier.clickable {
+                    selectedCategoryId = category.id
+                },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(

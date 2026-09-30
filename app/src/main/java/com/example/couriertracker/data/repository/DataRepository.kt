@@ -12,6 +12,7 @@ interface DataRepository {
     val data: Flow<List<OperationWithCategory>>
 
     suspend fun addService(service: Service)
+    fun getServices(): Flow<List<Service>>
     suspend fun addSlot(slot: Slot)
     suspend fun addCategory(category: Category)
 
