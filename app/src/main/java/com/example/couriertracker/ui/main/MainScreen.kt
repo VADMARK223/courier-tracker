@@ -22,7 +22,6 @@ import com.example.couriertracker.data.repository.DataRepository
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(
-    onItemClick: (NavKey) -> Unit,
     repository: DataRepository,
 ) {
 
@@ -37,7 +36,6 @@ fun MainScreen(
         is MainScreenUiState.Success -> {
             MainScreen(
                 operations = (state as MainScreenUiState.Success).data,
-                onItemClick = onItemClick,
                 onDeleteOperation = viewModel::deleteOperation
             )
         }
@@ -52,7 +50,6 @@ fun MainScreen(
 @Composable
 internal fun MainScreen(
     operations: List<OperationWithCategory>,
-    onItemClick: (NavKey) -> Unit,
     onDeleteOperation: (Operation) -> Unit,
     modifier: Modifier = Modifier
 ) {

@@ -31,20 +31,16 @@ fun ServiceListItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(item.name)
-                IconButton(
-                    onClick = {
-                        onDelete(item)
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Удалить сервис"
-                    )
+            Text(item.name)
+            IconButton(
+                onClick = {
+                    onDelete(item)
                 }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Удалить сервис"
+                )
             }
         }
     }

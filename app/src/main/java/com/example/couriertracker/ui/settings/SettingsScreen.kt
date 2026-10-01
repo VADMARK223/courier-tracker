@@ -21,7 +21,7 @@ import com.example.couriertracker.data.repository.SettingsRepository
 fun SettingsScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    settingsRepository: SettingsRepository
+//    settingsRepository: SettingsRepository
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -43,5 +43,7 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.headlineMedium
             )
         }
+
+        Text("Версия 0.0.1")
     }
 }

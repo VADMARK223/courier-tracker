@@ -38,7 +38,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.couriertracker.data.model.Slot
 import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.data.repository.SettingsRepository
-import com.example.couriertracker.ui.slot.ServiceItem
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
@@ -46,7 +45,6 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import kotlin.text.format
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -149,9 +147,6 @@ fun AddSlotScreen(
                         viewModel.saveLastSelectedServiceId(service.id)
                     },
                     isSelected = service.id == selectedServiceId,
-                    onDelete = {
-//                        serviceToDelete = service
-                    }
                 )
             }
         }

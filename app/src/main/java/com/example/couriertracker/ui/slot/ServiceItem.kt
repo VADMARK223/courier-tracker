@@ -20,7 +20,6 @@ fun ServiceItem(
     item: Service,
     isSelected : Boolean,
     onSelected: () ->Unit,
-    onDelete: (Service) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(

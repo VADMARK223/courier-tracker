@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -15,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +38,7 @@ fun ServicesScreen(
     onSave: (Service) -> Unit,
     onServiceDelete: (Service) -> Unit,
 ) {
+    var serviceToDelete by remember { mutableStateOf<Service?>(null) }
     var showAddSlotSheet by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -71,11 +74,36 @@ fun ServicesScreen(
             ServicesList(
                 repository = repository,
                 settingsRepository = settingsRepository,
-                onServiceDelete = onServiceDelete,
+                onServiceDelete = { service ->
+                    serviceToDelete = service
+                },
                 modifier = Modifier.padding(paddingValues)
             )
         }
     )
+
+    serviceToDelete?.let { service ->
+        AlertDialog(
+            onDismissRequest = { serviceToDelete = null }, // Закрываем при клике мимо
+            title = { Text(text = "Удаление сервиса") },
+            text = { Text(text = "Вы уверены, что хотите удалить сервис \"${service.name}\"? Все его слоты будут удалены!") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onServiceDelete(service)
+                        serviceToDelete = null
+                    }
+                ) {
+                    Text("Удалить")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { serviceToDelete = null }) {
+                    Text("Отмена")
+                }
+            }
+        )
+    }
 
     if (showAddSlotSheet) {
         ModalBottomSheet(
@@ -89,14 +117,6 @@ fun ServicesScreen(
                     showAddSlotSheet = false
                 }
             )
-            /*AddSlotScreen(
-                onSave = { slot ->
-                    onSave(slot)
-                    showAddSlotSheet = false
-                },
-                repository = repository,
-                settingsRepository = settingsRepository
-            )*/
         }
     }
 }

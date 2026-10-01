@@ -4,11 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -25,14 +21,12 @@ import com.example.couriertracker.data.model.Service
 @Composable
 fun AddServiceScreen(
     onSave: (Service) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     var name by remember {
         mutableStateOf("")
     }
 
     Column(
-//        modifier = modifier.fillMaxWidth()
         modifier = Modifier.padding(horizontal = 24.dp)
     ) {
         Row(

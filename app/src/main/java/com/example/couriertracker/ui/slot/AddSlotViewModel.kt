@@ -2,8 +2,6 @@ package com.example.couriertracker.ui.slot
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.couriertracker.data.model.Category
-import com.example.couriertracker.data.model.OperationType
 import com.example.couriertracker.data.model.Service
 import com.example.couriertracker.data.model.Slot
 import com.example.couriertracker.data.repository.DataRepository
@@ -14,7 +12,7 @@ import kotlinx.coroutines.launch
 class AddSlotViewModel(
     private val repository: DataRepository,
     private val settingsRepository: SettingsRepository
-): ViewModel() {
+) : ViewModel() {
     fun getServices(): Flow<List<Service>> {
         return repository.getServices()
     }
@@ -23,7 +21,7 @@ class AddSlotViewModel(
         return repository.getSlots()
     }
 
-   val lastSelectedServiceId: Flow<Long?> = settingsRepository.lastSelectedServiceId
+    val lastSelectedServiceId: Flow<Long?> = settingsRepository.lastSelectedServiceId
 
     fun saveLastSelectedServiceId(serviceId: Long) {
         viewModelScope.launch {
