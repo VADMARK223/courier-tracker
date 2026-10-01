@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.NavKey
 import com.example.couriertracker.AddCategory
 import com.example.couriertracker.AddOperation
-import com.example.couriertracker.AddSlot
+import com.example.couriertracker.Slots
 import com.example.couriertracker.Main
 
 @Composable
@@ -45,7 +45,7 @@ fun AppScaffold(
                 )
 
                 NavigationBarItem(
-                    selected = currentScreen == AddSlot,
+                    selected = currentScreen == Slots,
                     onClick = onSlotClick,
                     icon = {
                         Icon(

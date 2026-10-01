@@ -27,7 +27,7 @@ import com.example.couriertracker.ui.main.MainScreen
 import com.example.couriertracker.ui.operation.AddOperationScreen
 import com.example.couriertracker.ui.service.AddServiceScreen
 import com.example.couriertracker.ui.settings.SettingsScreen
-import com.example.couriertracker.ui.slot.AddSlotScreen
+import com.example.couriertracker.ui.slot.SlotsScreen
 import kotlinx.coroutines.launch
 
 
@@ -76,7 +76,7 @@ fun MainNavigation() {
             backStack.add(Main)
         },
         onSlotClick = {
-            backStack.add(AddSlot)
+            backStack.add(Slots)
         },
         onOperationClick = {
             backStack.add(AddOperation)
@@ -118,31 +118,30 @@ fun MainNavigation() {
                             )
                         }
                     }
-                    entry<AddSlot> {
+                    entry<Slots> {
                         AppScreen {
-                            AddSlotScreen(
+                            SlotsScreen(
                                 repository = repository,
                                 settingsRepository = settingsRepository,
-                                onItemClick = { navKey -> backStack.add(navKey) },
                                 onBack = {
                                     backStack.removeLastOrNull()
                                 },
-                                onServiceDelete = { service ->
+                                /*onServiceDelete = { service ->
                                     scope.launch {
                                         repository.deleteService(service)
                                     }
-                                },
+                                },*/
                                 onSlotDelete = { slot ->
                                     scope.launch {
                                         repository.deleteSlot(slot)
                                     }
                                 },
-                                onSave = { slot ->
+                                /*onSave = { slot ->
                                     scope.launch {
                                         repository.addSlot(slot)
                                         backStack.removeLastOrNull()
                                     }
-                                }
+                                }*/
                             )
                         }
                     }
@@ -190,6 +189,6 @@ fun MainNavigation() {
                     }
                 },
 
-        )
+            )
     }
 }

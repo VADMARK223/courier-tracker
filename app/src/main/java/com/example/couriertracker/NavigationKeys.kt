@@ -10,7 +10,7 @@ data object Main : NavKey
 data object AddService : NavKey
 
 @Serializable
-data object AddSlot : NavKey
+data object Slots : NavKey
 
 @Serializable
 data object AddCategory : NavKey
