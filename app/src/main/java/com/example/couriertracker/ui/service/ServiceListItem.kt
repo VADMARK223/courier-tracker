@@ -1,13 +1,15 @@
-package com.example.couriertracker.ui.slot
+package com.example.couriertracker.ui.service
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.RadioButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,10 +18,8 @@ import com.example.couriertracker.data.model.Service
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ServiceItem(
+fun ServiceListItem(
     item: Service,
-    isSelected : Boolean,
-    onSelected: () ->Unit,
     onDelete: (Service) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -32,20 +32,9 @@ fun ServiceItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
-                modifier = Modifier.clickable{ onSelected()},
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                RadioButton(
-                    selected = isSelected,
-                    onClick = onSelected
-                )
-
                 Text(item.name)
-            }
-
-            /*Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
                 IconButton(
                     onClick = {
                         onDelete(item)
@@ -56,7 +45,7 @@ fun ServiceItem(
                         contentDescription = "Удалить сервис"
                     )
                 }
-            }*/
+            }
         }
     }
 }

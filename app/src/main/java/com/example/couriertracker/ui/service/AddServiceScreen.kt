@@ -3,6 +3,7 @@ package com.example.couriertracker.ui.service
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -18,11 +19,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.couriertracker.data.model.Service
 
 @Composable
 fun AddServiceScreen(
-    onBack: () -> Unit,
     onSave: (Service) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -31,19 +32,12 @@ fun AddServiceScreen(
     }
 
     Column(
-        modifier = modifier.fillMaxWidth()
+//        modifier = modifier.fillMaxWidth()
+        modifier = Modifier.padding(horizontal = 24.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick = onBack
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Назад"
-                )
-            }
 
             Text(
                 text = "Новый сервис",

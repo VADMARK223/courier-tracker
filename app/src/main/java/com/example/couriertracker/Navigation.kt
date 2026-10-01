@@ -25,7 +25,7 @@ import com.example.couriertracker.ui.AppScreen
 import com.example.couriertracker.ui.category.AddCategoryScreen
 import com.example.couriertracker.ui.main.MainScreen
 import com.example.couriertracker.ui.operation.AddOperationScreen
-import com.example.couriertracker.ui.service.AddServiceScreen
+import com.example.couriertracker.ui.service.ServicesScreen
 import com.example.couriertracker.ui.settings.SettingsScreen
 import com.example.couriertracker.ui.slot.SlotsScreen
 import kotlinx.coroutines.launch
@@ -75,6 +75,9 @@ fun MainNavigation() {
             backStack.clear()
             backStack.add(Main)
         },
+        onServiceClick = {
+            backStack.add(Services)
+        },
         onSlotClick = {
             backStack.add(Slots)
         },
@@ -103,21 +106,30 @@ fun MainNavigation() {
                         }
 
                     }
-                    entry<AddService> {
+
+                    entry<Services> {
                         AppScreen {
-                            AddServiceScreen(
+                            ServicesScreen(
                                 onBack = {
                                     backStack.removeLastOrNull()
                                 },
+                                repository = repository,
+                                settingsRepository = settingsRepository,
                                 onSave = { service ->
                                     scope.launch {
                                         repository.addService(service)
                                         backStack.removeLastOrNull()
                                     }
-                                }
+                                },
+                                onServiceDelete = { service ->
+                                    scope.launch {
+                                        repository.deleteService(service)
+                                    }
+                                },
                             )
                         }
                     }
+
                     entry<Slots> {
                         AppScreen {
                             SlotsScreen(
@@ -127,11 +139,6 @@ fun MainNavigation() {
                                 repository = repository,
                                 settingsRepository = settingsRepository,
 
-                                /*onServiceDelete = { service ->
-                                    scope.launch {
-                                        repository.deleteService(service)
-                                    }
-                                },*/
                                 onSlotDelete = { slot ->
                                     scope.launch {
                                         repository.deleteSlot(slot)
@@ -146,6 +153,7 @@ fun MainNavigation() {
                             )
                         }
                     }
+
                     entry<AddCategory> {
                         AppScreen {
                             AddCategoryScreen(
