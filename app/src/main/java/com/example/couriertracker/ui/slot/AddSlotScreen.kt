@@ -8,18 +8,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -39,12 +35,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation3.runtime.NavKey
-import com.example.couriertracker.AddService
-import com.example.couriertracker.data.model.Service
 import com.example.couriertracker.data.model.Slot
 import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.data.repository.SettingsRepository
+import com.example.couriertracker.ui.slot.ServiceItem
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
@@ -52,19 +46,15 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import kotlin.text.format
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddSlotScreen(
-    onBack: () -> Unit,
     onSave: (Slot) -> Unit,
-    onServiceDelete: (Service) -> Unit,
-    onSlotDelete: (Slot) -> Unit,
-    onItemClick: (NavKey) -> Unit,
     repository: DataRepository,
     settingsRepository: SettingsRepository,
-    modifier: Modifier = Modifier
 ) {
     val viewModel: AddSlotViewModel = viewModel {
         AddSlotViewModel(
@@ -90,16 +80,12 @@ fun AddSlotScreen(
         }
     }
 
-    val slots by viewModel.getSlots()
-        .collectAsStateWithLifecycle(emptyList())
-
     var showDatePicker by remember { mutableStateOf(false) }
     var showStartTimePicker by remember { mutableStateOf(false) }
     var showEndTimePicker by remember { mutableStateOf(false) }
 
     val timeFormatter = remember { DateTimeFormatter.ofPattern("HH:mm") }
     val dateFormatter = remember { DateTimeFormatter.ofPattern("dd.MM.yyyy") }
-
     val slotValidation by remember {
         derivedStateOf {
             if (selectedServiceId == null) {
@@ -140,17 +126,12 @@ fun AddSlotScreen(
     }
 
     Column(
-        modifier = modifier.fillMaxWidth()
+//        modifier = modifier.fillMaxWidth()
+        modifier = Modifier.padding(horizontal = 24.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Назад"
-                )
-            }
             Text(
                 text = "Новый слот ${slotValidation.displayText}",
                 style = MaterialTheme.typography.headlineMedium
@@ -158,15 +139,6 @@ fun AddSlotScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        var serviceToDelete by remember { mutableStateOf<Service?>(null) }
-
-
-        var servicesListHint = "Список сервисов"
-        if (services.isEmpty()) {
-            servicesListHint += " пуст"
-        }
-        Text(servicesListHint)
 
         LazyColumn {
             items(services) { service ->
@@ -178,62 +150,11 @@ fun AddSlotScreen(
                     },
                     isSelected = service.id == selectedServiceId,
                     onDelete = {
-                        serviceToDelete = service
+//                        serviceToDelete = service
                     }
                 )
             }
         }
-
-        Button(
-            onClick = {
-                onItemClick(AddService)
-            },
-        ) {
-            Text("Добавить сервис")
-        }
-
-        serviceToDelete?.let { service ->
-            AlertDialog(
-                onDismissRequest = { serviceToDelete = null }, // Закрываем при клике мимо
-                title = { Text(text = "Удаление сервиса") },
-                text = { Text(text = "Вы уверены, что хотите удалить сервис \"${service.name}\"? Все его слоты будут удалены!") },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            onServiceDelete(service)
-                            serviceToDelete = null
-                        }
-                    ) {
-                        Text("Удалить")
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { serviceToDelete = null }) {
-                        Text("Отмена")
-                    }
-                }
-            )
-        }
-
-        HorizontalDivider()
-
-        var slotsListHint = "Список слотов"
-        if (slots.isEmpty()) {
-            slotsListHint += " пуст"
-        }
-        Text(slotsListHint)
-
-
-        slots.forEach { slot ->
-            SlotItem(
-                item = slot,
-                onDelete = { slot ->
-                    onSlotDelete(slot)
-                }
-            )
-        }
-
-        HorizontalDivider()
 
         Text(text = "Дата:", style = MaterialTheme.typography.labelLarge)
         OutlinedButton(
@@ -242,6 +163,7 @@ fun AddSlotScreen(
         ) {
             Text(date.format(dateFormatter))
         }
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -292,6 +214,7 @@ fun AddSlotScreen(
                         endTime = endDateTime
                     )
                 )
+
             },
             modifier = Modifier.fillMaxWidth()
         ) {

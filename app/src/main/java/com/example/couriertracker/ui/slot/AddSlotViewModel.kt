@@ -23,7 +23,7 @@ class AddSlotViewModel(
         return repository.getSlots()
     }
 
-    val lastSelectedServiceId: Flow<Long?> = settingsRepository.lastSelectedServiceId
+   val lastSelectedServiceId: Flow<Long?> = settingsRepository.lastSelectedServiceId
 
     fun saveLastSelectedServiceId(serviceId: Long) {
         viewModelScope.launch {

@@ -121,11 +121,12 @@ fun MainNavigation() {
                     entry<Slots> {
                         AppScreen {
                             SlotsScreen(
-                                repository = repository,
-                                settingsRepository = settingsRepository,
                                 onBack = {
                                     backStack.removeLastOrNull()
                                 },
+                                repository = repository,
+                                settingsRepository = settingsRepository,
+
                                 /*onServiceDelete = { service ->
                                     scope.launch {
                                         repository.deleteService(service)
@@ -136,12 +137,12 @@ fun MainNavigation() {
                                         repository.deleteSlot(slot)
                                     }
                                 },
-                                /*onSave = { slot ->
+                                onSave = { slot ->
                                     scope.launch {
                                         repository.addSlot(slot)
-                                        backStack.removeLastOrNull()
+//                                        backStack.removeLastOrNull()
                                     }
-                                }*/
+                                }
                             )
                         }
                     }
