@@ -1,5 +1,6 @@
 package com.example.couriertracker.ui.main
 
+
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
@@ -16,12 +17,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import com.example.couriertracker.AddCategory
 import com.example.couriertracker.AddOperation
-import com.example.couriertracker.AddService
 import com.example.couriertracker.AddSlot
-import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.data.model.Operation
 import com.example.couriertracker.data.model.OperationType
 import com.example.couriertracker.data.model.OperationWithCategory
+import com.example.couriertracker.data.repository.DataRepository
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -79,12 +79,6 @@ internal fun MainScreen(
             items(operations) { item ->
                 OperationItem(item = item, onDelete = onDeleteOperation)
             }
-        }
-
-        Button(
-            onClick = { onItemClick(AddService) },
-        ) {
-            Text("Добавить сервис")
         }
 
         Button(

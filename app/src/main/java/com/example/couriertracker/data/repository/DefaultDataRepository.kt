@@ -28,8 +28,20 @@ class DefaultDataRepository(
         return serviceDao.getAll()
     }
 
+    override suspend fun deleteService(service: Service) {
+        serviceDao.delete(service)
+    }
+
     override suspend fun addSlot(slot: Slot) {
         slotDao.insert(slot)
+    }
+
+    override suspend fun deleteSlot(slot: Slot) {
+        slotDao.delete(slot)
+    }
+
+    override fun getSlots(): Flow<List<Slot>> {
+        return slotDao.getAll()
     }
 
     override suspend fun addCategory(category: Category) {

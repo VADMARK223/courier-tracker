@@ -13,9 +13,9 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.room3.Room
 import com.example.couriertracker.data.database.AppDatabase
-import com.example.couriertracker.data.repository.DefaultDataRepository
 import com.example.couriertracker.data.database.MIGRATION_1_2
 import com.example.couriertracker.data.database.MIGRATION_2_3
+import com.example.couriertracker.data.repository.DefaultDataRepository
 import com.example.couriertracker.data.repository.SettingsRepository
 import com.example.couriertracker.ui.AppScaffold
 import com.example.couriertracker.ui.AppScreen
@@ -49,7 +49,8 @@ fun MainNavigation() {
             database.serviceDao(),
             database.slotDao(),
             database.categoryDao(),
-            database.operationDao())
+            database.operationDao()
+        )
     }
 
     val settingsRepository = remember {
@@ -107,8 +108,19 @@ fun MainNavigation() {
                         AppScreen {
                             AddSlotScreen(
                                 repository = repository,
+                                onItemClick = { navKey -> backStack.add(navKey) },
                                 onBack = {
                                     backStack.removeLastOrNull()
+                                },
+                                onServiceDelete = { service ->
+                                    scope.launch {
+                                        repository.deleteService(service)
+                                    }
+                                },
+                                onSlotDelete = {slot->
+                                    scope.launch {
+                                        repository.deleteSlot(slot)
+                                    }
                                 },
                                 onSave = { slot ->
                                     scope.launch {

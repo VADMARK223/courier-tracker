@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
@@ -15,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +38,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation3.runtime.NavKey
+import com.example.couriertracker.AddService
+import com.example.couriertracker.data.model.Service
 import com.example.couriertracker.data.model.Slot
 import com.example.couriertracker.data.repository.DataRepository
 import java.time.Duration
@@ -51,6 +57,9 @@ import java.time.format.DateTimeFormatter
 fun AddSlotScreen(
     onBack: () -> Unit,
     onSave: (Slot) -> Unit,
+    onServiceDelete: (Service) -> Unit,
+    onSlotDelete: (Slot) -> Unit,
+    onItemClick: (NavKey) -> Unit,
     repository: DataRepository,
     modifier: Modifier = Modifier
 ) {
@@ -66,6 +75,9 @@ fun AddSlotScreen(
     }
 
     val services by viewModel.getServices()
+        .collectAsStateWithLifecycle(emptyList())
+
+    val slots by viewModel.getSlots()
         .collectAsStateWithLifecycle(emptyList())
 
     var showDatePicker by remember { mutableStateOf(false) }
@@ -134,16 +146,80 @@ fun AddSlotScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        services.forEach { service ->
-            ServiceItem(
-                item = service,
-                onDelete = {},
-                isSelected = service.id == selectedServiceId,
-                onSelected = {
-                    selectedServiceId = service.id
+        var serviceToDelete by remember { mutableStateOf<Service?>(null) }
+
+
+        var servicesListHint = "Список сервисов"
+        if (services.isEmpty()) {
+            servicesListHint += " пуст"
+        }
+        Text(servicesListHint)
+
+        LazyColumn {
+            items(services) { service ->
+                ServiceItem(
+                    item = service,
+                    onSelected = {
+                        selectedServiceId = service.id
+                    },
+                    isSelected = service.id == selectedServiceId,
+                    onDelete = {
+                        serviceToDelete = service
+                    }
+                )
+            }
+        }
+
+        Button(
+            onClick = {
+                onItemClick(AddService)
+            },
+        ) {
+            Text("Добавить сервис")
+        }
+
+        serviceToDelete?.let { service ->
+            AlertDialog(
+                onDismissRequest = { serviceToDelete = null }, // Закрываем при клике мимо
+                title = { Text(text = "Удаление сервиса") },
+                text = { Text(text = "Вы уверены, что хотите удалить сервис \"${service.name}\"?") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            onServiceDelete(service)
+                            serviceToDelete = null
+                        }
+                    ) {
+                        Text("Удалить")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { serviceToDelete = null }) {
+                        Text("Отмена")
+                    }
                 }
             )
         }
+
+        HorizontalDivider()
+
+        var slotsListHint = "Список слотов"
+        if (slots.isEmpty()) {
+            slotsListHint += " пуст"
+        }
+        Text(slotsListHint)
+
+
+        slots.forEach { slot ->
+            SlotItem(
+                item = slot,
+                onDelete = { slot ->
+                    onSlotDelete(slot)
+                }
+            )
+        }
+
+        HorizontalDivider()
 
         Text(text = "Дата:", style = MaterialTheme.typography.labelLarge)
         OutlinedButton(

@@ -57,7 +57,7 @@ fun AddServiceScreen(
                 name = it
             },
             label = {
-                Text("Название категории")
+                Text("Название сервиса")
             },
             modifier = Modifier.fillMaxWidth()
         )
