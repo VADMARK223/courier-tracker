@@ -28,6 +28,7 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +44,7 @@ import com.example.couriertracker.AddService
 import com.example.couriertracker.data.model.Service
 import com.example.couriertracker.data.model.Slot
 import com.example.couriertracker.data.repository.DataRepository
+import com.example.couriertracker.data.repository.SettingsRepository
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
@@ -61,21 +63,32 @@ fun AddSlotScreen(
     onSlotDelete: (Slot) -> Unit,
     onItemClick: (NavKey) -> Unit,
     repository: DataRepository,
+    settingsRepository: SettingsRepository,
     modifier: Modifier = Modifier
 ) {
+    val viewModel: AddSlotViewModel = viewModel {
+        AddSlotViewModel(
+            repository = repository,
+            settingsRepository = settingsRepository
+        )
+    }
+
+    val savedServiceId by viewModel.lastSelectedServiceId.collectAsStateWithLifecycle(initialValue = null)
     var selectedServiceId by remember { mutableStateOf<Long?>(null) }
     var date by remember { mutableStateOf(LocalDate.now()) }
     var startTime by remember { mutableStateOf(LocalTime.of(9, 0)) }
     var endTime by remember { mutableStateOf(LocalTime.of(18, 0)) }
 
-    val viewModel: AddSlotViewModel = viewModel {
-        AddSlotViewModel(
-            repository = repository
-        )
-    }
 
     val services by viewModel.getServices()
         .collectAsStateWithLifecycle(emptyList())
+
+
+    LaunchedEffect(savedServiceId) {
+        if (selectedServiceId == null && savedServiceId != null) {
+            selectedServiceId = savedServiceId
+        }
+    }
 
     val slots by viewModel.getSlots()
         .collectAsStateWithLifecycle(emptyList())
@@ -161,6 +174,7 @@ fun AddSlotScreen(
                     item = service,
                     onSelected = {
                         selectedServiceId = service.id
+                        viewModel.saveLastSelectedServiceId(service.id)
                     },
                     isSelected = service.id == selectedServiceId,
                     onDelete = {
@@ -182,7 +196,7 @@ fun AddSlotScreen(
             AlertDialog(
                 onDismissRequest = { serviceToDelete = null }, // Закрываем при клике мимо
                 title = { Text(text = "Удаление сервиса") },
-                text = { Text(text = "Вы уверены, что хотите удалить сервис \"${service.name}\"?") },
+                text = { Text(text = "Вы уверены, что хотите удалить сервис \"${service.name}\"? Все его слоты будут удалены!") },
                 confirmButton = {
                     TextButton(
                         onClick = {

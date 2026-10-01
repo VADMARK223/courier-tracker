@@ -80,24 +80,6 @@ internal fun MainScreen(
                 OperationItem(item = item, onDelete = onDeleteOperation)
             }
         }
-
-        Button(
-            onClick = { onItemClick(AddSlot) },
-        ) {
-            Text("Добавить слот")
-        }
-
-        Button(
-            onClick = { onItemClick(AddCategory) },
-        ) {
-            Text("Добавить категорию")
-        }
-
-        Button(
-            onClick = { onItemClick(AddOperation) },
-        ) {
-            Text("Добавить операцию")
-        }
     }
 }
 

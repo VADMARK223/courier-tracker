@@ -17,3 +17,6 @@ data object AddCategory : NavKey
 
 @Serializable
 data object AddOperation : NavKey
+
+@Serializable
+data object Settings : NavKey

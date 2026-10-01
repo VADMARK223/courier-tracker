@@ -3,6 +3,7 @@ package com.example.couriertracker.data.repository
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.couriertracker.data.model.OperationType
@@ -17,6 +18,7 @@ class SettingsRepository(
     private val context: Context
 ) {
     private val lastOperationTypeKey = stringPreferencesKey("last_operation_type")
+    private val lastSelectedServiceKey = longPreferencesKey("last_selected_service")
 
     val lastOperationType: Flow<OperationType> = context.dataStore.data
         .catch { exception ->
@@ -39,6 +41,25 @@ class SettingsRepository(
     suspend fun saveLastOperationType(type: OperationType) {
         context.dataStore.edit { preferences ->
             preferences[lastOperationTypeKey] = type.name
+        }
+    }
+
+    val lastSelectedServiceId: Flow<Long?> = context.dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
+        .map { preferences ->
+            preferences[lastSelectedServiceKey]
+        }
+
+
+    suspend fun saveLastSelectedServiceId(serviceId: Long) {
+        context.dataStore.edit { preferences ->
+            preferences[lastSelectedServiceKey] = serviceId
         }
     }
 }

@@ -44,7 +44,8 @@ internal val MIGRATION_2_3 = object : Migration(2, 3) {
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 serviceId INTEGER NOT NULL,
                 startTime INTEGER NOT NULL,
-                endTime INTEGER NOT NULL
+                endTime INTEGER NOT NULL,
+                FOREIGN KEY(serviceId) REFERENCES services(id) ON DELETE CASCADE
             )
             """.trimIndent()
         )

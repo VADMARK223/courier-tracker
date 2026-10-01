@@ -12,6 +12,9 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.room3.Room
+import androidx.room3.RoomDatabase
+import androidx.sqlite.SQLiteConnection
+import androidx.sqlite.execSQL
 import com.example.couriertracker.data.database.AppDatabase
 import com.example.couriertracker.data.database.MIGRATION_1_2
 import com.example.couriertracker.data.database.MIGRATION_2_3
@@ -23,6 +26,7 @@ import com.example.couriertracker.ui.category.AddCategoryScreen
 import com.example.couriertracker.ui.main.MainScreen
 import com.example.couriertracker.ui.operation.AddOperationScreen
 import com.example.couriertracker.ui.service.AddServiceScreen
+import com.example.couriertracker.ui.settings.SettingsScreen
 import com.example.couriertracker.ui.slot.AddSlotScreen
 import kotlinx.coroutines.launch
 
@@ -39,6 +43,12 @@ fun MainNavigation() {
             context = applicationContext,
             name = "courier_tacker.db"
         )
+            .addCallback(object : RoomDatabase.Callback() {
+                override suspend fun onOpen(connection: SQLiteConnection) {
+                    super.onOpen(connection)
+                    connection.execSQL("PRAGMA foreign_keys=ON;")
+                }
+            })
             .addMigrations(MIGRATION_1_2)
             .addMigrations(MIGRATION_2_3)
             .build()
@@ -57,8 +67,7 @@ fun MainNavigation() {
         SettingsRepository(applicationContext)
     }
 
-//    val backStack = rememberNavBackStack(Main)
-    val backStack = rememberNavBackStack(AddSlot)
+    val backStack = rememberNavBackStack(Main) // TODO: сделать сохранение выбранного экрана
 
     AppScaffold(
         currentScreen = backStack.last(),
@@ -66,13 +75,18 @@ fun MainNavigation() {
             backStack.clear()
             backStack.add(Main)
         },
-        onCategoryClick = {
-            backStack.add(AddCategory)
+        onSlotClick = {
+            backStack.add(AddSlot)
         },
         onOperationClick = {
             backStack.add(AddOperation)
         },
-        onSettingsClick = {}
+        onCategoryClick = {
+            backStack.add(AddCategory)
+        },
+        onSettingsClick = {
+            backStack.add(Settings)
+        }
     ) { paddingValues ->
         NavDisplay(
             backStack = backStack,
@@ -108,6 +122,7 @@ fun MainNavigation() {
                         AppScreen {
                             AddSlotScreen(
                                 repository = repository,
+                                settingsRepository = settingsRepository,
                                 onItemClick = { navKey -> backStack.add(navKey) },
                                 onBack = {
                                     backStack.removeLastOrNull()
@@ -117,7 +132,7 @@ fun MainNavigation() {
                                         repository.deleteService(service)
                                     }
                                 },
-                                onSlotDelete = {slot->
+                                onSlotDelete = { slot ->
                                     scope.launch {
                                         repository.deleteSlot(slot)
                                     }
@@ -163,7 +178,18 @@ fun MainNavigation() {
                             )
                         }
                     }
+                    entry<Settings> {
+                        AppScreen {
+                            SettingsScreen(
+                                onBack = {
+                                    backStack.removeLastOrNull()
+                                },
+                                settingsRepository = settingsRepository
+                            )
+                        }
+                    }
                 },
+
         )
     }
 }

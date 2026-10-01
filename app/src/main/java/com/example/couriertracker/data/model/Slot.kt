@@ -1,10 +1,22 @@
 package com.example.couriertracker.data.model
 
 import androidx.room3.Entity
+import androidx.room3.ForeignKey
 import androidx.room3.PrimaryKey
 import java.time.LocalDateTime
 
-@Entity(tableName = "slots")
+@Entity(
+    tableName = "slots",
+    foreignKeys = [
+        ForeignKey(
+            entity = Service::class,
+            parentColumns = ["id"],
+            childColumns = ["serviceId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+
+)
 data class Slot(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,

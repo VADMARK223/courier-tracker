@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Report
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material3.Icon
@@ -17,12 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.NavKey
 import com.example.couriertracker.AddCategory
 import com.example.couriertracker.AddOperation
+import com.example.couriertracker.AddSlot
 import com.example.couriertracker.Main
 
 @Composable
 fun AppScaffold(
     currentScreen: NavKey,
     onMainClick: () -> Unit,
+    onSlotClick: ()-> Unit,
     onCategoryClick: () -> Unit,
     onOperationClick: () -> Unit,
     onSettingsClick: () -> Unit,
@@ -44,8 +45,8 @@ fun AppScaffold(
                 )
 
                 NavigationBarItem(
-                    selected = false,
-                    onClick = { },
+                    selected = currentScreen == AddSlot,
+                    onClick = onSlotClick,
                     icon = {
                         Icon(
                             imageVector = Icons.Default.Timeline,
@@ -67,7 +68,7 @@ fun AppScaffold(
                     label = { Text("Операции") }
                 )
 
-                NavigationBarItem(
+                /*NavigationBarItem(
                     selected = false,
                     onClick = { },
                     icon = {
@@ -77,7 +78,7 @@ fun AppScaffold(
                         )
                     },
                     label = { Text("Отчеты") }
-                )
+                )*/
 
                 NavigationBarItem(
                     selected = currentScreen == AddCategory,
