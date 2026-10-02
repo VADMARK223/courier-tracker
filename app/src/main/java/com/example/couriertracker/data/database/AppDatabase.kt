@@ -5,9 +5,9 @@ import androidx.room3.Database
 import androidx.room3.RoomDatabase
 import com.example.couriertracker.data.local.Converters
 import com.example.couriertracker.data.model.Category
-import com.example.couriertracker.data.model.Operation
+import com.example.couriertracker.data.model.operation.Operation
 import com.example.couriertracker.data.model.Service
-import com.example.couriertracker.data.model.Slot
+import com.example.couriertracker.data.model.slot.Slot
 
 @Database(
     entities = [

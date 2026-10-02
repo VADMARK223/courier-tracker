@@ -1,8 +1,9 @@
-package com.example.couriertracker.data.model
+package com.example.couriertracker.data.model.slot
 
 import androidx.room3.Entity
 import androidx.room3.ForeignKey
 import androidx.room3.PrimaryKey
+import com.example.couriertracker.data.model.Service
 import java.time.LocalDateTime
 
 @Entity(
@@ -15,7 +16,6 @@ import java.time.LocalDateTime
             onDelete = ForeignKey.CASCADE
         )
     ]
-
 )
 data class Slot(
     @PrimaryKey(autoGenerate = true)

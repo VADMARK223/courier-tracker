@@ -1,4 +1,4 @@
-package com.example.couriertracker.data.model
+package com.example.couriertracker.data.model.operation
 
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey

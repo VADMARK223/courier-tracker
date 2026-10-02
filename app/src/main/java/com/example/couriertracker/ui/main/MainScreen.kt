@@ -13,10 +13,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation3.runtime.NavKey
-import com.example.couriertracker.data.model.Operation
-import com.example.couriertracker.data.model.OperationType
-import com.example.couriertracker.data.model.OperationWithCategory
+import com.example.couriertracker.data.model.operation.Operation
+import com.example.couriertracker.data.model.operation.OperationType
+import com.example.couriertracker.data.model.operation.OperationWithCategory
 import com.example.couriertracker.data.repository.DataRepository
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -24,24 +23,23 @@ import com.example.couriertracker.data.repository.DataRepository
 fun MainScreen(
     repository: DataRepository,
 ) {
-
     val viewModel: MainScreenViewModel = viewModel { MainScreenViewModel(repository) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    when (state) {
+    when (val currentState = state) { // Сохраняем в локальную переменную для стабильности Smart Cast
         MainScreenUiState.Loading -> {
             // Blank
         }
 
         is MainScreenUiState.Success -> {
             MainScreen(
-                operations = (state as MainScreenUiState.Success).data,
+                operations = currentState.data,
                 onDeleteOperation = viewModel::deleteOperation
             )
         }
 
         is MainScreenUiState.Error -> {
-            Text("Error loading data: ${(state as MainScreenUiState.Error).throwable.message}")
+            Text("Error loading data: ${currentState.throwable.message}")
         }
     }
 }

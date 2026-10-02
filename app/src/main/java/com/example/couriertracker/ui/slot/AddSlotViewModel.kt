@@ -3,7 +3,7 @@ package com.example.couriertracker.ui.slot
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.couriertracker.data.model.Service
-import com.example.couriertracker.data.model.Slot
+import com.example.couriertracker.data.model.slot.Slot
 import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.data.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow

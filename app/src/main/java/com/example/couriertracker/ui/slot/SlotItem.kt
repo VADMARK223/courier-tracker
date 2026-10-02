@@ -12,10 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.couriertracker.data.model.Slot
+import com.example.couriertracker.data.model.slot.Slot
+import com.example.couriertracker.data.model.slot.SlotWithService
 
 @Composable
-fun SlotItem(item: Slot, onDelete: (Slot) -> Unit, modifier: Modifier = Modifier) {
+fun SlotItem(item: SlotWithService, onDelete: (Slot) -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
@@ -27,7 +28,7 @@ fun SlotItem(item: Slot, onDelete: (Slot) -> Unit, modifier: Modifier = Modifier
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Слот: ${item.id}")
+                Text(text = "Слот №${item.slot.id} (${item.service.name})")
             }
 
             Row(
@@ -35,7 +36,7 @@ fun SlotItem(item: Slot, onDelete: (Slot) -> Unit, modifier: Modifier = Modifier
             ) {
                 IconButton(
                     onClick = {
-                        onDelete(item)
+                        onDelete(item.slot)
                     }
                 ) {
                     Icon(

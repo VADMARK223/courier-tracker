@@ -4,7 +4,10 @@ import androidx.room3.Dao
 import androidx.room3.Delete
 import androidx.room3.Insert
 import androidx.room3.Query
-import com.example.couriertracker.data.model.Slot
+import androidx.room3.Transaction
+import com.example.couriertracker.data.model.operation.OperationWithCategory
+import com.example.couriertracker.data.model.slot.Slot
+import com.example.couriertracker.data.model.slot.SlotWithService
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -17,4 +20,8 @@ interface SlotDao {
 
     @Delete
     suspend fun delete(slot: Slot)
+
+    @Transaction
+    @Query("SELECT * FROM slots ORDER BY startTime")
+    fun getAllWithService(): Flow<List<SlotWithService>>
 }

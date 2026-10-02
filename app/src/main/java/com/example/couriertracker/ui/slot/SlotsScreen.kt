@@ -22,7 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.couriertracker.data.model.Slot
+import com.example.couriertracker.data.model.slot.Slot
 import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.data.repository.SettingsRepository
 
@@ -70,7 +70,6 @@ fun SlotsScreen(
         content = { paddingValues ->
             SlotsList(
                 repository = repository,
-                settingsRepository = settingsRepository,
                 onSlotDelete = onSlotDelete,
                 modifier = Modifier.padding(paddingValues)
             )

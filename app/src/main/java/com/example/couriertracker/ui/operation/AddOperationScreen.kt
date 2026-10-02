@@ -35,8 +35,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.couriertracker.data.model.Operation
-import com.example.couriertracker.data.model.OperationType
+import com.example.couriertracker.data.model.operation.Operation
+import com.example.couriertracker.data.model.operation.OperationType
 import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.data.repository.SettingsRepository
 import java.time.Instant

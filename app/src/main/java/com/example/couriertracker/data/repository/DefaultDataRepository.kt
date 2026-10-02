@@ -5,11 +5,12 @@ import com.example.couriertracker.data.database.OperationDao
 import com.example.couriertracker.data.database.ServiceDao
 import com.example.couriertracker.data.database.SlotDao
 import com.example.couriertracker.data.model.Category
-import com.example.couriertracker.data.model.Operation
-import com.example.couriertracker.data.model.OperationType
-import com.example.couriertracker.data.model.OperationWithCategory
+import com.example.couriertracker.data.model.operation.Operation
+import com.example.couriertracker.data.model.operation.OperationType
+import com.example.couriertracker.data.model.operation.OperationWithCategory
 import com.example.couriertracker.data.model.Service
-import com.example.couriertracker.data.model.Slot
+import com.example.couriertracker.data.model.slot.Slot
+import com.example.couriertracker.data.model.slot.SlotWithService
 import kotlinx.coroutines.flow.Flow
 
 class DefaultDataRepository(
@@ -18,7 +19,8 @@ class DefaultDataRepository(
     private val categoryDao: CategoryDao,
     private val operationDao: OperationDao
 ) : DataRepository {
-    override val data: Flow<List<OperationWithCategory>> = operationDao.getAllWithCategory()
+    override val operationsWithCategory: Flow<List<OperationWithCategory>> = operationDao.getAllWithCategory()
+    override val slotWithService: Flow<List<SlotWithService>> = slotDao.getAllWithService()
 
     override suspend fun addService(service: Service) {
         serviceDao.insert(service)

@@ -1,15 +1,17 @@
 package com.example.couriertracker.data.repository
 
 import com.example.couriertracker.data.model.Category
-import com.example.couriertracker.data.model.Operation
-import com.example.couriertracker.data.model.OperationType
-import com.example.couriertracker.data.model.OperationWithCategory
+import com.example.couriertracker.data.model.operation.Operation
+import com.example.couriertracker.data.model.operation.OperationType
+import com.example.couriertracker.data.model.operation.OperationWithCategory
 import com.example.couriertracker.data.model.Service
-import com.example.couriertracker.data.model.Slot
+import com.example.couriertracker.data.model.slot.Slot
+import com.example.couriertracker.data.model.slot.SlotWithService
 import kotlinx.coroutines.flow.Flow
 
 interface DataRepository {
-    val data: Flow<List<OperationWithCategory>>
+    val operationsWithCategory: Flow<List<OperationWithCategory>>
+    val slotWithService: Flow<List<SlotWithService>>
 
     suspend fun addService(service: Service)
     fun getServices(): Flow<List<Service>>

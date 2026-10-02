@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.couriertracker.data.model.Category
 import com.example.couriertracker.data.repository.DataRepository
-import com.example.couriertracker.data.model.OperationType
+import com.example.couriertracker.data.model.operation.OperationType
 import com.example.couriertracker.data.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
