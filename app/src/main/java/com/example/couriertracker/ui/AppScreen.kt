@@ -3,6 +3,7 @@ package com.example.couriertracker.ui
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -14,8 +15,7 @@ fun AppScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-//            .safeDrawingPadding()
-            .padding(16.dp)
+            .padding(16.dp, 0.dp, 16.dp,0.dp)
     ) {
         content()
     }

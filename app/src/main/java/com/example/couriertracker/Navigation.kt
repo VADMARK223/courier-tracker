@@ -100,7 +100,6 @@ fun MainNavigation() {
                     entry<Main> {
                         AppScreen {
                             MainScreen(
-//                                onItemClick = { navKey -> backStack.add(navKey) },
                                 repository = repository,
                             )
                         }
@@ -112,19 +111,7 @@ fun MainNavigation() {
                                 onBack = {
                                     backStack.removeLastOrNull()
                                 },
-                                repository = repository,
-                                settingsRepository = settingsRepository,
-                                onSave = { service ->
-                                    scope.launch {
-                                        repository.addService(service)
-//                                        backStack.removeLastOrNull()
-                                    }
-                                },
-                                onServiceDelete = { service ->
-                                    scope.launch {
-                                        repository.deleteService(service)
-                                    }
-                                },
+                                repository = repository
                             )
                         }
                     }

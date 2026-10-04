@@ -22,7 +22,7 @@ class DefaultDataRepository(
     override val operationsWithCategory: Flow<List<OperationWithCategory>> = operationDao.getAllWithCategory()
     override val slotWithService: Flow<List<SlotWithService>> = slotDao.getAllWithService()
 
-    override suspend fun addService(service: Service) {
+    override suspend fun insertService(service: Service) {
         serviceDao.insert(service)
     }
 

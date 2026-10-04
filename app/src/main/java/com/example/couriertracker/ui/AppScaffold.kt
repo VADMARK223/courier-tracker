@@ -1,6 +1,8 @@
 package com.example.couriertracker.ui
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Category
@@ -32,6 +34,9 @@ fun AppScaffold(
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
+//        contentWindowInsets = WindowInsets.navigationBars,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+
         bottomBar = {
             NavigationBar {
                 NavigationBarItem(
