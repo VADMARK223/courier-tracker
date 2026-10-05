@@ -1,4 +1,4 @@
-package com.example.couriertracker.ui.settings
+package com.example.couriertracker.ui.exercise
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -15,19 +15,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.couriertracker.AppConfig
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SettingsScreen(
+fun ExercisesScreen(
     onBack: () -> Unit,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Настройки")
+                    Text("Упражнения")
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -45,7 +44,7 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Text("Версия ${AppConfig.VERSION}")
+            Text("Список упражнений")
         }
     }
 }

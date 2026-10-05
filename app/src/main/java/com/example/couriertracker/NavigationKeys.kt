@@ -20,3 +20,6 @@ data object AddOperation : NavKey
 
 @Serializable
 data object Settings : NavKey
+
+@Serializable
+data object Exercises : NavKey

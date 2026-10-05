@@ -2,14 +2,13 @@ package com.example.couriertracker.ui
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Report
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Timeline
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -20,8 +19,10 @@ import androidx.navigation3.runtime.NavKey
 import com.example.couriertracker.AddCategory
 import com.example.couriertracker.AddOperation
 import com.example.couriertracker.Main
+import com.example.couriertracker.Services
 import com.example.couriertracker.Slots
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppScaffold(
     currentScreen: NavKey,
@@ -30,11 +31,9 @@ fun AppScaffold(
     onSlotClick: () -> Unit,
     onCategoryClick: () -> Unit,
     onOperationClick: () -> Unit,
-    onSettingsClick: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
-//        contentWindowInsets = WindowInsets.navigationBars,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
 
         bottomBar = {
@@ -52,7 +51,7 @@ fun AppScaffold(
                 )
 
                 NavigationBarItem(
-                    selected = false,
+                    selected = currentScreen == Services,
                     onClick = onServiceClick,
                     icon = {
                         Icon(
@@ -87,8 +86,6 @@ fun AppScaffold(
                     label = { Text("Операции") }
                 )
 
-
-
                 NavigationBarItem(
                     selected = currentScreen == AddCategory,
                     onClick = onCategoryClick,
@@ -100,19 +97,6 @@ fun AppScaffold(
                     },
                     label = { Text("Категории") }
                 )
-
-                NavigationBarItem(
-                    selected = false,
-                    onClick = onSettingsClick,
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Настройки"
-                        )
-                    },
-                    label = { Text("Настройки") }
-                )
-
             }
         },
         content = content
