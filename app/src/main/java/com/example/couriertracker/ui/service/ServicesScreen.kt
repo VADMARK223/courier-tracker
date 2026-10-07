@@ -44,6 +44,7 @@ fun ServicesScreen(
             }
         }
     )
+//    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     val services by viewModel.services.collectAsStateWithLifecycle(emptyList())
 
@@ -71,9 +72,7 @@ fun ServicesScreen(
     ) { innerPadding ->
         ServicesList(
             services = services,
-            onServiceDeleteClick = { service ->
-                serviceToDelete = service
-            },
+            onServiceDeleteClick = { service -> serviceToDelete = service },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)

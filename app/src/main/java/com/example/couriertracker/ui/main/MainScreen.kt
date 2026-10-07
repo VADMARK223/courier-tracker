@@ -43,7 +43,7 @@ fun MainScreen(
         }
 
         is MainScreenUiState.Success -> {
-            MainScreen(
+            MainScreenContent(
                 operations = currentState.data,
                 onDeleteOperation = viewModel::deleteOperation,
                 onMenuClick = onMenuClick
@@ -59,7 +59,7 @@ fun MainScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-internal fun MainScreen(
+internal fun MainScreenContent(
     operations: List<OperationWithCategory>,
     onDeleteOperation: (Operation) -> Unit,
     onMenuClick: () -> Unit

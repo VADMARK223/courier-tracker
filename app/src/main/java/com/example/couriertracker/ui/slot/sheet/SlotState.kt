@@ -1,4 +1,4 @@
-package com.example.couriertracker.ui.slot
+package com.example.couriertracker.ui.slot.sheet
 
 data class SlotState(
     val isValid: Boolean,

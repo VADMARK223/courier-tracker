@@ -1,4 +1,4 @@
-package com.example.couriertracker.ui.slot
+package com.example.couriertracker.ui.slot.sheet
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -9,15 +9,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
@@ -38,6 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.couriertracker.data.model.slot.Slot
 import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.data.repository.SettingsRepository
+import com.example.couriertracker.ui.slot.SlotsScreenViewModel
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
@@ -49,19 +53,22 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AddSlotScreen(
+fun AddSlotSheet(
     onSave: (Slot) -> Unit,
     repository: DataRepository,
     settingsRepository: SettingsRepository,
 ) {
-    val viewModel: AddSlotViewModel = viewModel {
-        AddSlotViewModel(
+    val viewModel: SlotsScreenViewModel = viewModel {
+        SlotsScreenViewModel(
             repository = repository,
             settingsRepository = settingsRepository
         )
     }
 
+    // TODO: Если сервис удаляется, то чистить его из сохраненных настроек.
     val savedServiceId by viewModel.lastSelectedServiceId.collectAsStateWithLifecycle(initialValue = null)
+    var serviceMenuExpanded by remember { mutableStateOf(false) }
+
     var selectedServiceId by remember { mutableStateOf<Long?>(null) }
     var date by remember { mutableStateOf(LocalDate.now()) }
     var startTime by remember { mutableStateOf(LocalTime.of(9, 0)) }
@@ -70,7 +77,7 @@ fun AddSlotScreen(
 
     val services by viewModel.getServices()
         .collectAsStateWithLifecycle(emptyList())
-
+    val selectedService = services.find { it.id == selectedServiceId }
 
     LaunchedEffect(savedServiceId) {
         if (selectedServiceId == null && savedServiceId != null) {
@@ -124,7 +131,6 @@ fun AddSlotScreen(
     }
 
     Column(
-//        modifier = modifier.fillMaxWidth()
         modifier = Modifier.padding(horizontal = 24.dp)
     ) {
         Row(
@@ -138,16 +144,58 @@ fun AddSlotScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        LazyColumn {
-            items(services) { service ->
-                ServiceItem(
-                    item = service,
-                    onSelected = {
-                        selectedServiceId = service.id
-                        viewModel.saveLastSelectedServiceId(service.id)
+        ExposedDropdownMenuBox(
+            expanded = serviceMenuExpanded,
+            onExpandedChange = {
+                serviceMenuExpanded = !serviceMenuExpanded
+            }
+        ) {
+            if (services.isEmpty()) {
+                Button(
+                    onClick = {
                     },
-                    isSelected = service.id == selectedServiceId,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Добавить сервис")
+                }
+            } else {
+                OutlinedTextField(
+                    value = selectedService?.name ?: "Выберите сервис",
+                    onValueChange = {},
+                    readOnly = true,
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(
+                            expanded = serviceMenuExpanded
+                        )
+                    },
+                    modifier = Modifier
+                        .menuAnchor(
+                            type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
+                            enabled = true
+                        )
+                        .fillMaxWidth()
                 )
+            }
+
+
+            ExposedDropdownMenu(
+                expanded = serviceMenuExpanded,
+                onDismissRequest = {
+                    serviceMenuExpanded = false
+                }
+            ) {
+                services.forEach { service ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(service.name)
+                        },
+                        onClick = {
+                            selectedServiceId = service.id
+                            viewModel.saveLastSelectedServiceId(service.id)
+                            serviceMenuExpanded = false
+                        }
+                    )
+                }
             }
         }
 
@@ -185,8 +233,6 @@ fun AddSlotScreen(
                 }
             }
         }
-
-//        Spacer(modifier = Modifier.height(32.dp))
 
         if (!slotValidation.isValid && slotValidation.errorText != null) {
             Text(

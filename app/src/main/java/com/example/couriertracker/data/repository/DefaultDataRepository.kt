@@ -34,7 +34,7 @@ class DefaultDataRepository(
         serviceDao.delete(service)
     }
 
-    override suspend fun addSlot(slot: Slot) {
+    override suspend fun insertSlot(slot: Slot) {
         slotDao.insert(slot)
     }
 

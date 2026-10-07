@@ -160,16 +160,16 @@ fun MainNavigation() {
                                     repository = repository,
                                     settingsRepository = settingsRepository,
 
-                                    onSlotDelete = { slot ->
+                                    /*onSlotDelete = { slot ->
                                         scope.launch {
                                             repository.deleteSlot(slot)
                                         }
                                     },
                                     onSave = { slot ->
                                         scope.launch {
-                                            repository.addSlot(slot)
+                                            repository.insertSlot(slot)
                                         }
-                                    }
+                                    }*/
                                 )
                             }
                         }
