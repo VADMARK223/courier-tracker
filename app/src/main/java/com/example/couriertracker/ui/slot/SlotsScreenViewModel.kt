@@ -107,6 +107,12 @@ class SlotsScreenViewModel(
         }
     }
 
+    fun clearLastSelectedServiceId() {
+        viewModelScope.launch {
+            settingsRepository.clearLastSelectedServiceId()
+        }
+    }
+
 
     private val _saveState = MutableStateFlow<SlotSaveState>(
         SlotSaveState.Idle

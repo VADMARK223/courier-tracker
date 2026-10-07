@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.couriertracker.data.model.Service
 import com.example.couriertracker.data.repository.DataRepository
+import com.example.couriertracker.data.repository.SettingsRepository
 import kotlinx.coroutines.launch
 
 class ServicesViewModel(
     private val repository: DataRepository,
+    private val settingsRepository: SettingsRepository,
 ) : ViewModel() {
     val services = repository.getServices()
 
@@ -20,6 +22,7 @@ class ServicesViewModel(
     fun deleteService(service: Service) {
         viewModelScope.launch {
             repository.deleteService(service)
+            settingsRepository.clearLastSelectedServiceIdIfMatches(service.id)
         }
     }
 }

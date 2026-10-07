@@ -25,6 +25,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.couriertracker.data.model.Service
 import com.example.couriertracker.data.repository.DataRepository
+import com.example.couriertracker.data.repository.SettingsRepository
 import com.example.couriertracker.ui.service.dialog.DeleteServiceDialog
 import com.example.couriertracker.ui.service.list.ServicesList
 
@@ -33,6 +34,7 @@ import com.example.couriertracker.ui.service.list.ServicesList
 fun ServicesScreen(
     onBack: () -> Unit,
     repository: DataRepository,
+    settingsRepository: SettingsRepository
 ) {
     var serviceToDelete by remember { mutableStateOf<Service?>(null) }
     var showAddServiceSheet by remember { mutableStateOf(false) }
@@ -40,7 +42,7 @@ fun ServicesScreen(
     val viewModel: ServicesViewModel = viewModel(
         factory = viewModelFactory {
             initializer {
-                ServicesViewModel(repository)
+                ServicesViewModel(repository, settingsRepository)
             }
         }
     )

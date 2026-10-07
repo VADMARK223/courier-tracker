@@ -1,6 +1,7 @@
 package com.example.couriertracker.ui.slot.sheet
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +31,6 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.couriertracker.AppConfig.TAG_LOGCAT
 import com.example.couriertracker.data.model.slot.Slot
 import com.example.couriertracker.ui.slot.SlotSaveState
 import com.example.couriertracker.ui.slot.SlotsScreenViewModel
@@ -73,6 +74,10 @@ fun AddSlotSheet(
         .collectAsStateWithLifecycle(emptyList())
     val selectedService = services.find { it.id == selectedServiceId }
 
+    LaunchedEffect(savedServiceId) {
+        Log.d(TAG_LOGCAT, "savedServiceId = $savedServiceId")
+    }
+
     LaunchedEffect(saveState) {
         if (saveState is SlotSaveState.Success) {
             onSaved()
@@ -80,8 +85,12 @@ fun AddSlotSheet(
         }
     }
 
-    LaunchedEffect(savedServiceId) {
-        if (selectedServiceId == null && savedServiceId != null) {
+    LaunchedEffect(savedServiceId, services) {
+        if (
+            selectedServiceId == null &&
+            savedServiceId != null &&
+            services.any { it.id == savedServiceId }
+        ) {
             selectedServiceId = savedServiceId
         }
     }
@@ -92,9 +101,44 @@ fun AddSlotSheet(
 
     val timeFormatter = remember { DateTimeFormatter.ofPattern("HH:mm") }
     val dateFormatter = remember { DateTimeFormatter.ofPattern("dd.MM.yyyy") }
-    val slotValidation by remember {
+
+    val slotValidation = if (selectedService == null) {
+        SlotState(
+            isValid = false,
+            displayText = "",
+            errorText = "Необходимо выбрать сервис"
+        )
+    } else {
+        val duration = Duration.between(startTime, endTime)
+
+        if (duration.isNegative || duration.isZero) {
+            SlotState(
+                isValid = false,
+                displayText = "",
+                errorText = "Период должен быть больше нуля"
+            )
+        } else {
+            val hours = duration.toHours()
+            val minutes = duration.toMinutes() % 60
+
+            val text = when {
+                hours <= 0L && minutes <= 0L -> ""
+                hours == 0L -> "($minutes м.) "
+                minutes == 0L -> "($hours ч.) "
+                else -> "($hours ч. $minutes м.) "
+            }
+
+            SlotState(
+                isValid = true,
+                displayText = text,
+                errorText = null
+            )
+        }
+    }
+
+    /*val slotValidation by remember {
         derivedStateOf {
-            if (selectedServiceId == null) {
+            if (selectedService == null) {
                 return@derivedStateOf SlotState(
                     isValid = false,
                     displayText = "",
@@ -129,7 +173,7 @@ fun AddSlotSheet(
             )
 
         }
-    }
+    }*/
 
     Column(
         modifier = Modifier.padding(horizontal = 24.dp)
@@ -237,7 +281,7 @@ fun AddSlotSheet(
 
         if (!slotValidation.isValid && slotValidation.errorText != null) {
             Text(
-                text = slotValidation.errorText!!,
+                text = slotValidation.errorText,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall
             )

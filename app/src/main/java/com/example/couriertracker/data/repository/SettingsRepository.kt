@@ -62,4 +62,18 @@ class SettingsRepository(
             preferences[lastSelectedServiceKey] = serviceId
         }
     }
+
+    suspend fun clearLastSelectedServiceId() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(lastSelectedServiceKey)
+        }
+    }
+
+    suspend fun clearLastSelectedServiceIdIfMatches(serviceId: Long) {
+        context.dataStore.edit { preferences ->
+            if (preferences[lastSelectedServiceKey] == serviceId) {
+                preferences.remove(lastSelectedServiceKey)
+            }
+        }
+    }
 }

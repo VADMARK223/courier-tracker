@@ -143,10 +143,9 @@ fun MainNavigation() {
                         entry<Services> {
                             AppScreen {
                                 ServicesScreen(
-                                    onBack = {
-                                        backStack.removeLastOrNull()
-                                    },
-                                    repository = repository
+                                    onBack = { backStack.removeLastOrNull() },
+                                    repository = repository,
+                                    settingsRepository = settingsRepository
                                 )
                             }
                         }
