@@ -46,7 +46,7 @@ import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AddOperationScreen(
+fun OperationsScreen(
     onBack: () -> Unit,
     onSave: (Operation) -> Unit,
     modifier: Modifier = Modifier,

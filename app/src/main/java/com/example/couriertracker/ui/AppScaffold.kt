@@ -16,8 +16,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.NavKey
-import com.example.couriertracker.AddCategory
-import com.example.couriertracker.AddOperation
+import com.example.couriertracker.Categories
+import com.example.couriertracker.Operations
 import com.example.couriertracker.Main
 import com.example.couriertracker.Services
 import com.example.couriertracker.Slots
@@ -75,7 +75,7 @@ fun AppScaffold(
                 )
 
                 NavigationBarItem(
-                    selected = currentScreen == AddOperation,
+                    selected = currentScreen == Operations,
                     onClick = onOperationClick,
                     icon = {
                         Icon(
@@ -87,7 +87,7 @@ fun AppScaffold(
                 )
 
                 NavigationBarItem(
-                    selected = currentScreen == AddCategory,
+                    selected = currentScreen == Categories,
                     onClick = onCategoryClick,
                     icon = {
                         Icon(

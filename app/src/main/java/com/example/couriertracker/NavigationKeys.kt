@@ -12,11 +12,13 @@ data object Services : NavKey
 @Serializable
 data object Slots : NavKey
 
-@Serializable
-data object AddCategory : NavKey
+
 
 @Serializable
-data object AddOperation : NavKey
+data object Operations : NavKey
+
+@Serializable
+data object Categories : NavKey
 
 @Serializable
 data object Settings : NavKey

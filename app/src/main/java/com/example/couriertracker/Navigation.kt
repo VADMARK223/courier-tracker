@@ -7,8 +7,13 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.NavKey
@@ -27,14 +32,34 @@ import com.example.couriertracker.data.repository.SettingsRepository
 import com.example.couriertracker.ui.AppDrawer
 import com.example.couriertracker.ui.AppScaffold
 import com.example.couriertracker.ui.AppScreen
-import com.example.couriertracker.ui.category.AddCategoryScreen
+import com.example.couriertracker.ui.category.CategoriesScreen
 import com.example.couriertracker.ui.exercise.ExercisesScreen
 import com.example.couriertracker.ui.main.MainScreen
-import com.example.couriertracker.ui.operation.AddOperationScreen
+import com.example.couriertracker.ui.operation.OperationsScreen
 import com.example.couriertracker.ui.service.ServicesScreen
 import com.example.couriertracker.ui.settings.SettingsScreen
 import com.example.couriertracker.ui.slot.SlotsScreen
 import kotlinx.coroutines.launch
+
+enum class TopLevelScreen(
+    val navKey: NavKey
+) {
+    MAIN(Main),
+    SERVICES(Services),
+    SLOTS(Slots),
+    OPERATIONS(Operations),
+    CATEGORIES(Categories)
+}
+
+fun NavKey.toTopLevelScreen(): TopLevelScreen =
+    when (this) {
+        Main -> TopLevelScreen.MAIN
+        Services -> TopLevelScreen.SERVICES
+        Slots -> TopLevelScreen.SLOTS
+        Operations -> TopLevelScreen.OPERATIONS
+        Categories -> TopLevelScreen.CATEGORIES
+        else -> TopLevelScreen.MAIN
+    }
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -42,13 +67,14 @@ import kotlinx.coroutines.launch
 fun MainNavigation() {
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+
     val context = LocalContext.current
     val applicationContext = context.applicationContext
 
     val database = remember {
         Room.databaseBuilder<AppDatabase>(
             context = applicationContext,
-            name = "courier_tacker.db"
+            name = "courier_tracker.db"
         )
             .addCallback(object : RoomDatabase.Callback() {
                 override suspend fun onOpen(connection: SQLiteConnection) {
@@ -70,11 +96,50 @@ fun MainNavigation() {
         )
     }
 
-    val settingsRepository = remember {
-        SettingsRepository(applicationContext)
+    val settingsRepository = remember { SettingsRepository(applicationContext) }
+    val lastSelectedScreen by settingsRepository.lastSelectedScreen.collectAsState(
+        initial = null
+    )
+
+    val backStack = rememberNavBackStack(Main)
+
+    var screenRestored by remember {
+        mutableStateOf(false)
     }
 
-    val backStack = rememberNavBackStack(Main) // TODO: сделать сохранение выбранного экрана
+    LaunchedEffect(lastSelectedScreen) {
+        if (!screenRestored && lastSelectedScreen != null) {
+            val screen = lastSelectedScreen!!.navKey
+
+            backStack.clear()
+            backStack.add(Main)
+
+            if (screen != Main) {
+                backStack.add(screen)
+            }
+
+            screenRestored = true
+        }
+    }
+
+    fun saveSelectedScreen(screen: NavKey) {
+        scope.launch {
+            settingsRepository.saveLastSelectedScreen(
+                screen.toTopLevelScreen()
+            )
+        }
+    }
+
+    fun navigateToTopLevel(screen: NavKey) {
+        backStack.clear()
+        backStack.add(Main)
+
+        if (screen != Main) {
+            backStack.add(screen)
+        }
+
+        saveSelectedScreen(screen)
+    }
 
     fun navigateFromDrawer(screen: NavKey) {
         backStack.clear()
@@ -92,34 +157,19 @@ fun MainNavigation() {
             AppDrawer(
                 settingsSelected = backStack.last() == Settings,
                 exercisesSelected = backStack.last() == Exercises,
-                onSettingsClick = {
-                    navigateFromDrawer(Settings)
-                },
-                onExercisesClick = {
-                    navigateFromDrawer(Exercises)
-                }
+                onSettingsClick = { navigateFromDrawer(Settings) },
+                onExercisesClick = { navigateFromDrawer(Exercises) }
             )
         }
     ) {
         AppScaffold(
             currentScreen = backStack.last(),
 
-            onMainClick = {
-                backStack.clear()
-                backStack.add(Main)
-            },
-            onServiceClick = {
-                backStack.add(Services)
-            },
-            onSlotClick = {
-                backStack.add(Slots)
-            },
-            onOperationClick = {
-                backStack.add(AddOperation)
-            },
-            onCategoryClick = {
-                backStack.add(AddCategory)
-            }
+            onMainClick = { navigateToTopLevel(Main) },
+            onServiceClick = { navigateToTopLevel(Services) },
+            onSlotClick = { navigateToTopLevel(Slots) },
+            onOperationClick = { navigateToTopLevel(Operations) },
+            onCategoryClick = { navigateToTopLevel(Categories) }
         ) { paddingValues ->
             NavDisplay(
                 backStack = backStack,
@@ -158,39 +208,12 @@ fun MainNavigation() {
                                     },
                                     repository = repository,
                                     settingsRepository = settingsRepository,
-
-                                    /*onSlotDelete = { slot ->
-                                        scope.launch {
-                                            repository.deleteSlot(slot)
-                                        }
-                                    },
-                                    onSave = { slot ->
-                                        scope.launch {
-                                            repository.insertSlot(slot)
-                                        }
-                                    }*/
                                 )
                             }
                         }
-
-                        entry<AddCategory> {
+                        entry<Operations> {
                             AppScreen {
-                                AddCategoryScreen(
-                                    onBack = {
-                                        backStack.removeLastOrNull()
-                                    },
-                                    onSave = { category ->
-                                        scope.launch {
-                                            repository.addCategory(category)
-                                            backStack.removeLastOrNull()
-                                        }
-                                    }
-                                )
-                            }
-                        }
-                        entry<AddOperation> {
-                            AppScreen {
-                                AddOperationScreen(
+                                OperationsScreen(
                                     onBack = {
                                         backStack.removeLastOrNull()
                                     },
@@ -205,6 +228,22 @@ fun MainNavigation() {
                                 )
                             }
                         }
+                        entry<Categories> {
+                            AppScreen {
+                                CategoriesScreen(
+                                    onBack = {
+                                        backStack.removeLastOrNull()
+                                    },
+                                    onSave = { category ->
+                                        scope.launch {
+                                            repository.addCategory(category)
+                                            backStack.removeLastOrNull()
+                                        }
+                                    }
+                                )
+                            }
+                        }
+
                         entry<Settings> {
                             AppScreen {
                                 SettingsScreen(

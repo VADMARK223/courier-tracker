@@ -27,7 +27,7 @@ import com.example.couriertracker.data.model.Category
 import com.example.couriertracker.data.model.operation.OperationType
 
 @Composable
-fun AddCategoryScreen(
+fun CategoriesScreen(
     onBack: () -> Unit,
     onSave: (Category) -> Unit,
     modifier: Modifier = Modifier
