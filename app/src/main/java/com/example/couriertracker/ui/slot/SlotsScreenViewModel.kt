@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -77,8 +78,19 @@ class SlotsScreenViewModel(
 
     fun saveSlot(slot: Slot) {
         viewModelScope.launch {
-            repository.insertSlot(slot)
+            _saveState.value = SlotSaveState.Saving
+
+            try {
+                repository.insertSlot(slot)
+                _saveState.value = SlotSaveState.Success
+            } catch (e: Exception) {
+                _saveState.value = SlotSaveState.Error(e)
+            }
         }
+    }
+
+    fun resetSaveState() {
+        _saveState.value = SlotSaveState.Idle
     }
 
     fun deleteSlot(slot: Slot) {
@@ -94,6 +106,14 @@ class SlotsScreenViewModel(
             settingsRepository.saveLastSelectedServiceId(serviceId)
         }
     }
+
+
+    private val _saveState = MutableStateFlow<SlotSaveState>(
+        SlotSaveState.Idle
+    )
+
+    val saveState = _saveState.asStateFlow()
+
 }
 
 sealed interface SlotsScreenUiState {
@@ -102,4 +122,11 @@ sealed interface SlotsScreenUiState {
     data class Error(val throwable: Throwable) : SlotsScreenUiState
 
     data class Success(val data: List<SlotWithService>) : SlotsScreenUiState
+}
+
+sealed interface SlotSaveState {
+    data object Idle : SlotSaveState // Ничего не сохраняем
+    data object Saving : SlotSaveState // Запрос в Room выполняется
+    data object Success : SlotSaveState // Слот сохранен
+    data class Error(val throwable: Throwable) : SlotSaveState // Сохранение не удалось
 }

@@ -75,8 +75,6 @@ fun SlotsScreen(
                 slotsWithService = currentState.data,
                 onBack = onBack,
                 viewModel = viewModel,
-                repository = repository,
-                settingsRepository = settingsRepository
             )
         }
 
@@ -122,8 +120,6 @@ internal fun SlotsScreenContent(
     slotsWithService: List<SlotWithService>,
     onBack: () -> Unit,
     viewModel: SlotsScreenViewModel,
-    settingsRepository: SettingsRepository,
-    repository: DataRepository
 ) {
     var showAddSlotSheet by remember { mutableStateOf(false) }
 
@@ -169,16 +165,13 @@ internal fun SlotsScreenContent(
     if (showAddSlotSheet) {
         ModalBottomSheet(
             onDismissRequest = {
+                viewModel.resetSaveState()
                 showAddSlotSheet = false
             }
         ) {
             AddSlotSheet(
-                onSave = { slot ->
-                    viewModel.saveSlot(slot)
-                    showAddSlotSheet = false
-                },
-                repository = repository,
-                settingsRepository = settingsRepository
+                viewModel = viewModel,
+                onSaved = { showAddSlotSheet = false }
             )
         }
     }

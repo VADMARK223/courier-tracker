@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
@@ -37,10 +39,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.couriertracker.data.model.slot.Slot
-import com.example.couriertracker.data.repository.DataRepository
-import com.example.couriertracker.data.repository.SettingsRepository
+import com.example.couriertracker.ui.slot.SlotSaveState
 import com.example.couriertracker.ui.slot.SlotsScreenViewModel
 import java.time.Duration
 import java.time.Instant
@@ -54,16 +54,10 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddSlotSheet(
-    onSave: (Slot) -> Unit,
-    repository: DataRepository,
-    settingsRepository: SettingsRepository,
+    viewModel: SlotsScreenViewModel,
+    onSaved: () -> Unit,
 ) {
-    val viewModel: SlotsScreenViewModel = viewModel {
-        SlotsScreenViewModel(
-            repository = repository,
-            settingsRepository = settingsRepository
-        )
-    }
+    val saveState by viewModel.saveState.collectAsStateWithLifecycle()
 
     // TODO: Если сервис удаляется, то чистить его из сохраненных настроек.
     val savedServiceId by viewModel.lastSelectedServiceId.collectAsStateWithLifecycle(initialValue = null)
@@ -78,6 +72,13 @@ fun AddSlotSheet(
     val services by viewModel.getServices()
         .collectAsStateWithLifecycle(emptyList())
     val selectedService = services.find { it.id == selectedServiceId }
+
+    LaunchedEffect(saveState) {
+        if (saveState is SlotSaveState.Success) {
+            onSaved()
+            viewModel.resetSaveState()
+        }
+    }
 
     LaunchedEffect(savedServiceId) {
         if (selectedServiceId == null && savedServiceId != null) {
@@ -242,24 +243,42 @@ fun AddSlotSheet(
             )
         }
 
+        if (saveState is SlotSaveState.Error) {
+            val error = (saveState as SlotSaveState.Error).throwable
+
+            Text(
+                text = error.message ?: "Не удалось сохранить слот",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
         Button(
-            enabled = slotValidation.isValid,
+            enabled = slotValidation.isValid && saveState !is SlotSaveState.Saving,
             onClick = {
                 val startDateTime = LocalDateTime.of(date, startTime)
                 val endDateTime = LocalDateTime.of(date, endTime)
 
-                onSave(
+                viewModel.saveSlot(
                     Slot(
                         serviceId = selectedServiceId!!,
                         startTime = startDateTime,
                         endTime = endDateTime
                     )
                 )
-
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Сохранить")
+            if (saveState is SlotSaveState.Saving) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text("Сохранить")
+            }
         }
 
         if (showDatePicker) {
