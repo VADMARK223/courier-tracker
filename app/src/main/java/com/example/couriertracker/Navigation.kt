@@ -231,14 +231,9 @@ fun MainNavigation() {
                         entry<Categories> {
                             AppScreen {
                                 CategoriesScreen(
+                                    repository = repository,
                                     onBack = {
                                         backStack.removeLastOrNull()
-                                    },
-                                    onSave = { category ->
-                                        scope.launch {
-                                            repository.addCategory(category)
-                                            backStack.removeLastOrNull()
-                                        }
                                     }
                                 )
                             }

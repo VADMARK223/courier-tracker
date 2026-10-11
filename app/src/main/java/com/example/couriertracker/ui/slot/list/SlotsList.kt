@@ -1,5 +1,7 @@
 package com.example.couriertracker.ui.slot.list
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,18 +13,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.couriertracker.data.model.slot.Slot
 import com.example.couriertracker.data.model.slot.SlotWithService
-import kotlinx.coroutines.flow.Flow
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SlotsList(
     slotsWithService: List<SlotWithService>,
     onSlotDelete: (Slot) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    Box(
-        modifier = modifier
-    ) {
+    Box(modifier = modifier) {
         if (slotsWithService.isEmpty()) {
             Text(
                 text = "Список слотов пуст",
@@ -43,22 +42,4 @@ fun SlotsList(
             }
         }
     }
-
-
-    /*val slotWithService by viewModel.getSlotsWithService()
-        .collectAsStateWithLifecycle(emptyList())
-
-    LazyColumn(
-        modifier = modifier.fillMaxWidth()
-    )
-    {
-        items(slotWithService) { item ->
-            SlotListItem(
-                item = item,
-                onDelete = { item ->
-                    onSlotDelete(item)
-                }
-            )
-        }
-    }*/
 }

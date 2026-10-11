@@ -60,7 +60,6 @@ fun AddSlotSheet(
 ) {
     val saveState by viewModel.saveState.collectAsStateWithLifecycle()
 
-    // TODO: Если сервис удаляется, то чистить его из сохраненных настроек.
     val savedServiceId by viewModel.lastSelectedServiceId.collectAsStateWithLifecycle(initialValue = null)
     var serviceMenuExpanded by remember { mutableStateOf(false) }
 
@@ -135,45 +134,6 @@ fun AddSlotSheet(
             )
         }
     }
-
-    /*val slotValidation by remember {
-        derivedStateOf {
-            if (selectedService == null) {
-                return@derivedStateOf SlotState(
-                    isValid = false,
-                    displayText = "",
-                    errorText = "Необходимо выбрать сервис"
-                )
-            }
-
-            val duration = Duration.between(startTime, endTime)
-
-            if (duration.isNegative || duration.isZero) {
-                return@derivedStateOf SlotState(
-                    isValid = false,
-                    displayText = "",
-                    errorText = "Период должен быть больше нуля"
-                )
-            }
-
-            val hours = duration.toHours()
-            val minutes = duration.toMinutes() % 60
-
-            val text = when {
-                hours <= 0L && minutes <= 0L -> ""
-                hours == 0L -> "($minutes м.) "
-                minutes == 0L -> "($hours ч.) "
-                else -> "($hours ч. $minutes м.) "
-            }
-
-            SlotState(
-                isValid = true,
-                displayText = text,
-                errorText = null
-            )
-
-        }
-    }*/
 
     Column(
         modifier = Modifier.padding(horizontal = 24.dp)

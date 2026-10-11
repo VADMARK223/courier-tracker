@@ -5,10 +5,10 @@ import com.example.couriertracker.data.database.OperationDao
 import com.example.couriertracker.data.database.ServiceDao
 import com.example.couriertracker.data.database.SlotDao
 import com.example.couriertracker.data.model.Category
+import com.example.couriertracker.data.model.Service
 import com.example.couriertracker.data.model.operation.Operation
 import com.example.couriertracker.data.model.operation.OperationType
 import com.example.couriertracker.data.model.operation.OperationWithCategory
-import com.example.couriertracker.data.model.Service
 import com.example.couriertracker.data.model.slot.Slot
 import com.example.couriertracker.data.model.slot.SlotWithService
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +19,8 @@ class DefaultDataRepository(
     private val categoryDao: CategoryDao,
     private val operationDao: OperationDao
 ) : DataRepository {
-    override val operationsWithCategory: Flow<List<OperationWithCategory>> = operationDao.getAllWithCategory()
+    override val operationsWithCategory: Flow<List<OperationWithCategory>> =
+        operationDao.getAllWithCategory()
     override val slotWithService: Flow<List<SlotWithService>> = slotDao.getAllWithService()
 
     override suspend fun insertService(service: Service) {
@@ -46,14 +47,20 @@ class DefaultDataRepository(
         return slotDao.getAll()
     }
 
-    override suspend fun addCategory(category: Category) {
+    override fun getCategories(): Flow<List<Category>> {
+        return categoryDao.getAll()
+    }
+
+    override fun getCategoriesByType(type: OperationType): Flow<List<Category>> {
+        return categoryDao.getByType(type)
+    }
+
+    override suspend fun insertCategory(category: Category) {
         categoryDao.insert(category)
     }
 
-    override fun getCategoriesByType(
-        type: OperationType
-    ): Flow<List<Category>> {
-        return categoryDao.getByType(type)
+    override suspend fun deleteCategory(category: Category) {
+        categoryDao.delete(category)
     }
 
     override suspend fun addOperation(operation: Operation) {

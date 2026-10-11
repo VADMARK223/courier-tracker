@@ -20,9 +20,12 @@ interface DataRepository {
     suspend fun insertSlot(slot: Slot)
     fun getSlots(): Flow<List<Slot>>
     suspend fun deleteSlot(slot: Slot)
-    suspend fun addCategory(category: Category)
 
+    fun getCategories(): Flow<List<Category>>
     fun getCategoriesByType(type: OperationType): Flow<List<Category>>
+
+    suspend fun insertCategory(category: Category)
+    suspend fun deleteCategory(category: Category)
 
     suspend fun addOperation(operation: Operation)
 
