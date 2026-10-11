@@ -217,12 +217,6 @@ fun MainNavigation() {
                                     onBack = {
                                         backStack.removeLastOrNull()
                                     },
-                                    onSave = { operation ->
-                                        scope.launch {
-                                            repository.addOperation(operation)
-                                            backStack.removeLastOrNull()
-                                        }
-                                    },
                                     repository = repository,
                                     settingsRepository = settingsRepository
                                 )

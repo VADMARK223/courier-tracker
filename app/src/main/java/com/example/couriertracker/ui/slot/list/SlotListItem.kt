@@ -71,9 +71,7 @@ fun SlotListItem(
             width = 1.dp,
             color = MaterialTheme.colorScheme.outlineVariant
         ),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
