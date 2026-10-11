@@ -51,7 +51,7 @@ fun OperationsScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Слоты")
+                    Text("Операции")
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -78,9 +78,7 @@ fun OperationsScreen(
         content = { paddingValues ->
             OperationsList(
                 operations = operations,
-                onOperationDelete = { operation ->
-                    viewModel.deleteOperation(operation)
-                },
+                onOperationDelete = { operation -> viewModel.deleteOperation(operation) },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)

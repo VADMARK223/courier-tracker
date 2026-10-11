@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -60,6 +61,11 @@ fun AddOperationSheet(
     var showDatePicker by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+        Text(
+            text = "Добавление операции",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,

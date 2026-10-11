@@ -28,6 +28,7 @@ import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.data.repository.SettingsRepository
 import com.example.couriertracker.ui.service.dialog.DeleteServiceDialog
 import com.example.couriertracker.ui.service.list.ServicesList
+import com.example.couriertracker.ui.service.sheet.AddServiceSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,15 +47,13 @@ fun ServicesScreen(
             }
         }
     )
-//    val state by viewModel.uiState.collectAsStateWithLifecycle()
-
     val services by viewModel.services.collectAsStateWithLifecycle(emptyList())
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Сервисы")
+                    Text("Сервисы / Счета")
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {

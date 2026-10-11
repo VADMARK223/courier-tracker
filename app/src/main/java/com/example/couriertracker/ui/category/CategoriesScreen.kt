@@ -1,6 +1,5 @@
 package com.example.couriertracker.ui.category
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -65,20 +64,18 @@ fun CategoriesScreen(
                 )
             }
         },
-    ) { innerPadding ->
-        val categories by viewModel.getCategories().collectAsStateWithLifecycle(emptyList())
+        content = { paddingValues ->
+            val categories by viewModel.getCategories().collectAsStateWithLifecycle(emptyList())
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
             CategoriesList(
                 categories,
                 onCategoryDelete = { category -> viewModel.deleteCategory(category) },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
             )
         }
-    }
+    )
 
     if (showAddSheet) {
         ModalBottomSheet(onDismissRequest = { showAddSheet = false }) {

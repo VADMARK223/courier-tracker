@@ -41,6 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.couriertracker.AppConfig.TAG_LOGCAT
 import com.example.couriertracker.data.model.slot.Slot
+import com.example.couriertracker.ui.common.state.AddItemState
+import com.example.couriertracker.ui.components.AddItemWarning
 import com.example.couriertracker.ui.slot.SlotSaveState
 import com.example.couriertracker.ui.slot.SlotsScreenViewModel
 import java.time.Duration
@@ -60,6 +62,8 @@ fun AddSlotSheet(
 ) {
     val saveState by viewModel.saveState.collectAsStateWithLifecycle()
 
+    var title by remember { mutableStateOf("Добавление слота") }
+
     val savedServiceId by viewModel.lastSelectedServiceId.collectAsStateWithLifecycle(initialValue = null)
     var serviceMenuExpanded by remember { mutableStateOf(false) }
 
@@ -67,7 +71,6 @@ fun AddSlotSheet(
     var date by remember { mutableStateOf(LocalDate.now()) }
     var startTime by remember { mutableStateOf(LocalTime.of(9, 0)) }
     var endTime by remember { mutableStateOf(LocalTime.of(18, 0)) }
-
 
     val services by viewModel.getServices()
         .collectAsStateWithLifecycle(emptyList())
@@ -102,18 +105,16 @@ fun AddSlotSheet(
     val dateFormatter = remember { DateTimeFormatter.ofPattern("dd.MM.yyyy") }
 
     val slotValidation = if (selectedService == null) {
-        SlotState(
+        AddItemState(
             isValid = false,
-            displayText = "",
             errorText = "Необходимо выбрать сервис"
         )
     } else {
         val duration = Duration.between(startTime, endTime)
 
         if (duration.isNegative || duration.isZero) {
-            SlotState(
+            AddItemState(
                 isValid = false,
-                displayText = "",
                 errorText = "Период должен быть больше нуля"
             )
         } else {
@@ -127,9 +128,10 @@ fun AddSlotSheet(
                 else -> "($hours ч. $minutes м.) "
             }
 
-            SlotState(
+            title = "Новый слот ${text}"
+
+            AddItemState(
                 isValid = true,
-                displayText = text,
                 errorText = null
             )
         }
@@ -142,7 +144,7 @@ fun AddSlotSheet(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Новый слот ${slotValidation.displayText}",
+                text = title,
                 style = MaterialTheme.typography.headlineMedium
             )
         }
@@ -239,13 +241,7 @@ fun AddSlotSheet(
             }
         }
 
-        if (!slotValidation.isValid && slotValidation.errorText != null) {
-            Text(
-                text = slotValidation.errorText,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
+        AddItemWarning(slotValidation)
 
         if (saveState is SlotSaveState.Error) {
             val error = (saveState as SlotSaveState.Error).throwable

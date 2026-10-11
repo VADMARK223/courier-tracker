@@ -1,10 +1,8 @@
-package com.example.couriertracker.ui.service
+package com.example.couriertracker.ui.service.sheet
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -18,12 +16,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.couriertracker.data.model.Service
+import com.example.couriertracker.ui.common.state.AddItemState
+import com.example.couriertracker.ui.components.AddItemWarning
 
 @Composable
 fun AddServiceSheet(
     onSave: (Service) -> Unit,
 ) {
     var name by remember { mutableStateOf("") }
+
+    val addState = if (name.isNotBlank()) {
+        AddItemState(isValid = true)
+    } else {
+        AddItemState(
+            isValid = false,
+            errorText = "Имя сервиса / счета пустое"
+        )
+    }
 
     Column(
         modifier = Modifier.padding(
@@ -35,31 +44,26 @@ fun AddServiceSheet(
         verticalArrangement = Arrangement.spacedBy(16.dp) // Одинаковые отступы между элементами
     ) {
         Text(
-            text = "Новый сервис",
+            text = "Добавление сервиса / счета",
             style = MaterialTheme.typography.headlineMedium
         )
 
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            label = { Text("Название сервиса") },
+            label = { Text("Введите имя сервиса / счета") },
             singleLine = true, // Чтобы название не переносилось на много строк при случайном Enter
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(8.dp))
+
+        AddItemWarning(addState)
 
         Button(
-            onClick = {
-                onSave(
-                    Service(
-                        name = name.trim()
-                    )
-                )
-            },
-            enabled = name.isNotBlank(),
+            onClick = { onSave(Service(name = name.trim())) },
+            enabled = addState.isValid,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Сохранить")
+            Text("Добавить")
         }
     }
 }

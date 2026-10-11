@@ -29,7 +29,6 @@ fun OperationsList(
                 style = MaterialTheme.typography.bodyLarge
             )
         } else {
-
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(
                     items = operations,

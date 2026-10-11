@@ -3,11 +3,11 @@ package com.example.couriertracker.ui
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ReceiptLong
-import androidx.compose.material.icons.filled.Category
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Report
-import androidx.compose.material.icons.filled.Timeline
+import androidx.compose.material.icons.rounded.Category
+import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Storefront
+import androidx.compose.material.icons.rounded.SwapHoriz
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -17,8 +17,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.NavKey
 import com.example.couriertracker.Categories
-import com.example.couriertracker.Operations
 import com.example.couriertracker.Main
+import com.example.couriertracker.Operations
 import com.example.couriertracker.Services
 import com.example.couriertracker.Slots
 
@@ -43,7 +43,7 @@ fun AppScaffold(
                     onClick = onMainClick,
                     icon = {
                         Icon(
-                            imageVector = Icons.Default.Home,
+                            imageVector = Icons.Rounded.Home,
                             contentDescription = "Главная"
                         )
                     },
@@ -55,7 +55,7 @@ fun AppScaffold(
                     onClick = onServiceClick,
                     icon = {
                         Icon(
-                            imageVector = Icons.Default.Report,
+                            imageVector = Icons.Rounded.Storefront,
                             contentDescription = "Сервисы"
                         )
                     },
@@ -63,15 +63,15 @@ fun AppScaffold(
                 )
 
                 NavigationBarItem(
-                    selected = currentScreen == Slots,
-                    onClick = onSlotClick,
+                    selected = currentScreen == Categories,
+                    onClick = onCategoryClick,
                     icon = {
                         Icon(
-                            imageVector = Icons.Default.Timeline,
-                            contentDescription = "Слоты"
+                            imageVector = Icons.Rounded.Category,
+                            contentDescription = "Категории"
                         )
                     },
-                    label = { Text("Слоты") }
+                    label = { Text("Категории") }
                 )
 
                 NavigationBarItem(
@@ -79,7 +79,7 @@ fun AppScaffold(
                     onClick = onOperationClick,
                     icon = {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ReceiptLong,
+                            imageVector = Icons.Rounded.SwapHoriz,
                             contentDescription = "Операции"
                         )
                     },
@@ -87,15 +87,15 @@ fun AppScaffold(
                 )
 
                 NavigationBarItem(
-                    selected = currentScreen == Categories,
-                    onClick = onCategoryClick,
+                    selected = currentScreen == Slots,
+                    onClick = onSlotClick,
                     icon = {
                         Icon(
-                            imageVector = Icons.Default.Category,
-                            contentDescription = "Категории"
+                            imageVector = Icons.Rounded.DateRange,
+                            contentDescription = "Слоты"
                         )
                     },
-                    label = { Text("Категории") }
+                    label = { Text("Слоты") }
                 )
             }
         },
