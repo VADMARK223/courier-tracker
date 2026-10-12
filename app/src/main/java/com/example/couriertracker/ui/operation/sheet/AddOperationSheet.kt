@@ -3,18 +3,16 @@ package com.example.couriertracker.ui.operation.sheet
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -34,6 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.couriertracker.data.model.operation.Operation
 import com.example.couriertracker.data.model.operation.OperationType
+import com.example.couriertracker.ui.common.state.AddItemState
+import com.example.couriertracker.ui.components.AddItemWarning
+import com.example.couriertracker.ui.components.OperationTypeSelector
 import com.example.couriertracker.ui.operation.OperationsScreenViewModel
 import java.time.Instant
 import java.time.LocalDate
@@ -66,44 +67,17 @@ fun AddOperationSheet(
             style = MaterialTheme.typography.headlineMedium
         )
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            )
-            {
-                RadioButton(
-                    selected = operationType == OperationType.EXPENSE,
-                    onClick = {
-                        viewModel.saveLastOperationType(OperationType.EXPENSE)
-                        selectedCategoryId = null
-                    }
-                )
+        OperationTypeSelector(selectedType = operationType, onTypeSelected = { type ->
+            viewModel.saveLastOperationType(type)
+            selectedCategoryId = null
+        })
 
-                Text("Расход")
-            }
+        HorizontalDivider()
 
-            Spacer(modifier = Modifier.width(24.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            )
-            {
-                RadioButton(
-                    selected = operationType == OperationType.INCOME,
-                    onClick = {
-                        viewModel.saveLastOperationType(OperationType.INCOME)
-                        selectedCategoryId = null
-                    }
-                )
-
-                Text("Доход")
-            }
-        }
-
+        Text(
+            text = "Категории:",
+            style = MaterialTheme.typography.bodyMedium
+        )
 
         categories.forEach { category ->
             Row(
@@ -130,12 +104,8 @@ fun AddOperationSheet(
                     amount = newValue
                 }
             },
-            label = {
-                Text("Сумма")
-            },
-            suffix = {
-                Text("₽")
-            },
+            label = { Text("Сумма") },
+            suffix = { Text("₽") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
@@ -155,6 +125,22 @@ fun AddOperationSheet(
             )
         }
 
+        val addState = when {
+            amount.isBlank() -> AddItemState(
+                isValid = false,
+                errorText = "Введите сумму"
+            )
+
+            selectedCategoryId == null -> AddItemState(
+                isValid = false,
+                errorText = "Выберите категорию"
+            )
+
+            else -> AddItemState(isValid = true)
+        }
+
+        AddItemWarning(addState)
+
         Button(
             onClick = {
                 val amountInRubles = amount.toLongOrNull()
@@ -173,10 +159,10 @@ fun AddOperationSheet(
                     onSaved()
                 }
             },
-            enabled = amount.isNotBlank() && selectedCategoryId != null,
+            enabled = addState.isValid,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Сохранить")
+            Text("Добавить")
         }
     }
 

@@ -103,9 +103,8 @@ fun MainNavigation() {
 
     val backStack = rememberNavBackStack(Main)
 
-    var screenRestored by remember {
-        mutableStateOf(false)
-    }
+    var screenRestored by remember { mutableStateOf(false) }
+    var openAddServiceSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(lastSelectedScreen) {
         if (!screenRestored && lastSelectedScreen != null) {
@@ -195,7 +194,9 @@ fun MainNavigation() {
                                 ServicesScreen(
                                     onBack = { backStack.removeLastOrNull() },
                                     repository = repository,
-                                    settingsRepository = settingsRepository
+                                    settingsRepository = settingsRepository,
+                                    openAddSheet = openAddServiceSheet,
+                                    onAddSheetOpened = { openAddServiceSheet = false }
                                 )
                             }
                         }
@@ -205,6 +206,10 @@ fun MainNavigation() {
                                 SlotsScreen(
                                     onBack = {
                                         backStack.removeLastOrNull()
+                                    },
+                                    onAddServiceClick = {
+                                        openAddServiceSheet = true
+                                        navigateToTopLevel(Services)
                                     },
                                     repository = repository,
                                     settingsRepository = settingsRepository,

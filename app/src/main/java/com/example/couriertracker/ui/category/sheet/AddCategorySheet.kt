@@ -1,6 +1,5 @@
 package com.example.couriertracker.ui.category.sheet
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,10 +21,23 @@ import androidx.compose.ui.unit.dp
 import com.example.couriertracker.data.model.Category
 import com.example.couriertracker.data.model.operation.OperationType
 import com.example.couriertracker.ui.category.CategoriesScreenViewModel
+import com.example.couriertracker.ui.common.state.AddItemState
+import com.example.couriertracker.ui.components.AddItemWarning
+import com.example.couriertracker.ui.components.OperationTypeSelector
 
 @Composable
 fun AddCategorySheet(viewModel: CategoriesScreenViewModel, onSaved: () -> Unit) {
     var name by remember { mutableStateOf("") }
+
+    val addState = if (name.isNotBlank()) {
+        AddItemState(isValid = true)
+    } else {
+        AddItemState(
+            isValid = false,
+            errorText = "Введите название категории"
+        )
+    }
+
     var categoryType by remember { mutableStateOf(OperationType.EXPENSE) }
 
     Column(modifier = Modifier.padding(horizontal = 25.dp)) {
@@ -34,35 +45,14 @@ fun AddCategorySheet(viewModel: CategoriesScreenViewModel, onSaved: () -> Unit) 
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Новая категория",
+                text = "Создание категории",
                 style = MaterialTheme.typography.headlineMedium
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            RadioButton(
-                selected = categoryType == OperationType.EXPENSE,
-                onClick = {
-                    categoryType = OperationType.EXPENSE
-                }
-            )
-
-            Text("Расход")
-
-            RadioButton(
-                selected = categoryType == OperationType.INCOME,
-                onClick = {
-                    categoryType = OperationType.INCOME
-                }
-            )
-
-            Text("Доход")
-        }
+        OperationTypeSelector(selectedType = categoryType, onTypeSelected = { categoryType = it })
 
         OutlinedTextField(
             value = name,
@@ -74,6 +64,8 @@ fun AddCategorySheet(viewModel: CategoriesScreenViewModel, onSaved: () -> Unit) 
             },
             modifier = Modifier.fillMaxWidth()
         )
+
+        AddItemWarning(addState)
 
         Button(
             onClick = {
@@ -89,8 +81,8 @@ fun AddCategorySheet(viewModel: CategoriesScreenViewModel, onSaved: () -> Unit) 
             enabled = name.isNotBlank(),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Сохранить")
+            Text("Добавить")
         }
     }
- }
+}
 

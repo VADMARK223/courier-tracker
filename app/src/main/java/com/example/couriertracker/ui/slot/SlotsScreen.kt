@@ -47,6 +47,7 @@ import com.example.couriertracker.ui.slot.sheet.AddSlotSheet
 @Composable
 fun SlotsScreen(
     onBack: () -> Unit,
+    onAddServiceClick: () -> Unit,
     repository: DataRepository,
     settingsRepository: SettingsRepository,
 ) {
@@ -74,6 +75,7 @@ fun SlotsScreen(
             SlotsScreenContent(
                 slotsWithService = currentState.data,
                 onBack = onBack,
+                onAddServiceClick = onAddServiceClick,
                 viewModel = viewModel,
             )
         }
@@ -119,6 +121,7 @@ fun SlotsScreen(
 internal fun SlotsScreenContent(
     slotsWithService: List<SlotWithService>,
     onBack: () -> Unit,
+    onAddServiceClick: () -> Unit,
     viewModel: SlotsScreenViewModel,
 ) {
     var showAddSlotSheet by remember { mutableStateOf(false) }
@@ -171,7 +174,11 @@ internal fun SlotsScreenContent(
         ) {
             AddSlotSheet(
                 viewModel = viewModel,
-                onSaved = { showAddSlotSheet = false }
+                onSaved = { showAddSlotSheet = false },
+                onAddServiceClick = {
+                    showAddSlotSheet = false
+                    onAddServiceClick()
+                },
             )
         }
     }

@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +36,8 @@ import com.example.couriertracker.ui.service.sheet.AddServiceSheet
 fun ServicesScreen(
     onBack: () -> Unit,
     repository: DataRepository,
+    openAddSheet: Boolean,
+    onAddSheetOpened: () -> Unit,
     settingsRepository: SettingsRepository
 ) {
     var serviceToDelete by remember { mutableStateOf<Service?>(null) }
@@ -48,6 +51,13 @@ fun ServicesScreen(
         }
     )
     val services by viewModel.services.collectAsStateWithLifecycle(emptyList())
+
+    LaunchedEffect(openAddSheet) {
+        if (openAddSheet) {
+            showAddServiceSheet = true
+            onAddSheetOpened()
+        }
+    }
 
     Scaffold(
         topBar = {

@@ -59,6 +59,7 @@ import java.time.format.DateTimeFormatter
 fun AddSlotSheet(
     viewModel: SlotsScreenViewModel,
     onSaved: () -> Unit,
+    onAddServiceClick: () -> Unit,
 ) {
     val saveState by viewModel.saveState.collectAsStateWithLifecycle()
 
@@ -137,12 +138,8 @@ fun AddSlotSheet(
         }
     }
 
-    Column(
-        modifier = Modifier.padding(horizontal = 24.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+    Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineMedium
@@ -159,8 +156,7 @@ fun AddSlotSheet(
         ) {
             if (services.isEmpty()) {
                 Button(
-                    onClick = {
-                    },
+                    onClick = { onAddServiceClick() },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Добавить сервис")
