@@ -8,12 +8,27 @@ plugins {
 android {
     namespace = "com.example.couriertracker"
     compileSdk = 36
+
+
     defaultConfig {
         applicationId = "com.example.couriertracker"
         minSdk = 24
         targetSdk = 36
         versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1
         versionName = "1.0"
+    }
+
+    signingConfigs {
+        create("github") {
+            val keystorePath = System.getenv("ANDROID_KEYSTORE_PATH")
+
+            if (!keystorePath.isNullOrBlank()) {
+                storeFile = file(keystorePath)
+                storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                keyAlias = "courier"
+                keyPassword = System.getenv("ANDROID_KEY_PASSWORD")
+            }
+        }
     }
 
     buildTypes {
