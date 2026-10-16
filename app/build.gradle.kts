@@ -12,11 +12,18 @@ android {
         applicationId = "com.example.couriertracker"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
+        versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1
         versionName = "1.0"
     }
 
     buildTypes {
+        getByName("debug") {
+            val keystorePath = System.getenv("ANDROID_KEYSTORE_PATH")
+            if (!keystorePath.isNullOrBlank()) {
+                signingConfig = signingConfigs.getByName("github")
+            }
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -25,6 +32,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
