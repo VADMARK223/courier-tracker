@@ -1,7 +1,5 @@
 package com.example.couriertracker
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
@@ -62,7 +60,6 @@ fun NavKey.toTopLevelScreen(): TopLevelScreen =
     }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainNavigation() {
     val scope = rememberCoroutineScope()

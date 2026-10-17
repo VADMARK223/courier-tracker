@@ -29,7 +29,6 @@ import com.example.couriertracker.ui.main.formatMoney
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun OperationItem(
     item: OperationWithCategory,

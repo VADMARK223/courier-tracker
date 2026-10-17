@@ -1,7 +1,5 @@
 package com.example.couriertracker.ui.slot
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +40,6 @@ import com.example.couriertracker.data.repository.SettingsRepository
 import com.example.couriertracker.ui.slot.list.SlotsList
 import com.example.couriertracker.ui.slot.sheet.AddSlotSheet
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SlotsScreen(
@@ -115,7 +112,6 @@ fun SlotsScreen(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SlotsScreenContent(

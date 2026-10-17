@@ -1,7 +1,5 @@
 package com.example.couriertracker.ui.settings
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,10 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.couriertracker.AppConfig
+import com.example.couriertracker.ui.components.AppVersionText
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
@@ -45,7 +42,7 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Text("Версия ${AppConfig.VERSION}")
+            AppVersionText()
         }
     }
 }

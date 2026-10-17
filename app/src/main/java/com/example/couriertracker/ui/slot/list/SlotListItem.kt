@@ -32,7 +32,6 @@ import java.time.Duration
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SlotListItem(
     item: SlotWithService,

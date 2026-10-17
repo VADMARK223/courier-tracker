@@ -9,7 +9,6 @@ android {
     namespace = "com.example.couriertracker"
     compileSdk = 36
 
-
     defaultConfig {
         applicationId = "com.example.couriertracker"
         minSdk = 24
@@ -54,6 +53,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
     buildFeatures {
         compose = true
@@ -119,4 +119,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.datastore.preferences)
+
+    coreLibraryDesugaring(
+        "com.android.tools:desugar_jdk_libs:2.1.5"
+    )
 }

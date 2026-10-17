@@ -1,7 +1,5 @@
 package com.example.couriertracker.ui.operation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -29,7 +27,6 @@ import com.example.couriertracker.ui.operation.list.OperationsList
 import com.example.couriertracker.ui.operation.sheet.AddOperationSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun OperationsScreen(
     onBack: () -> Unit,

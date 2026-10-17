@@ -1,8 +1,5 @@
 package com.example.couriertracker.ui.main
 
-
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -28,12 +25,8 @@ import com.example.couriertracker.data.model.operation.OperationWithCategory
 import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.ui.operation.list.OperationItem
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainScreen(
-    repository: DataRepository,
-    onMenuClick: () -> Unit,
-) {
+fun MainScreen(repository: DataRepository, onMenuClick: () -> Unit) {
     val viewModel: MainScreenViewModel = viewModel { MainScreenViewModel(repository) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -58,7 +51,6 @@ fun MainScreen(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 internal fun MainScreenContent(
     operations: List<OperationWithCategory>,
@@ -66,6 +58,7 @@ internal fun MainScreenContent(
     onMenuClick: () -> Unit
 ) {
 
+    // TODO: Long переделать в BigInteger
     val balance: Long = operations.sumOf { item ->
         if (item.operation.type == OperationType.INCOME) {
             item.operation.amount
@@ -101,7 +94,10 @@ internal fun MainScreenContent(
             HorizontalDivider()
 
             LazyColumn {
-                items(operations) { item ->
+                items(
+                    items = operations,
+                    key = { it.operation.id }
+                ) { item ->
                     OperationItem(item = item, onDelete = onDeleteOperation)
                 }
             }

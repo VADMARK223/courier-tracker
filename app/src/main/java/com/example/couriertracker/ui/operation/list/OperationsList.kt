@@ -1,7 +1,5 @@
 package com.example.couriertracker.ui.operation.list
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,7 +12,6 @@ import androidx.compose.ui.Modifier
 import com.example.couriertracker.data.model.operation.Operation
 import com.example.couriertracker.data.model.operation.OperationWithCategory
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun OperationsList(
     operations: List<OperationWithCategory>,
