@@ -79,8 +79,9 @@ fun MainNavigation() {
                     connection.execSQL("PRAGMA foreign_keys=ON;")
                 }
             })
-            .addMigrations(MIGRATION_1_2)
-            .addMigrations(MIGRATION_2_3)
+//            .addMigrations(MIGRATION_1_2)
+//            .addMigrations(MIGRATION_2_3)
+            .fallbackToDestructiveMigration(true)
             .build()
     }
 

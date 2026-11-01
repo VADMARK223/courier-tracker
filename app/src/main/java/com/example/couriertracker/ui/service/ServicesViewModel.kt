@@ -13,12 +13,6 @@ class ServicesViewModel(
 ) : ViewModel() {
     val services = repository.getServices()
 
-    fun saveService(service: Service) {
-        viewModelScope.launch {
-            repository.insertService(service)
-        }
-    }
-
     fun deleteService(service: Service) {
         viewModelScope.launch {
             repository.deleteService(service)

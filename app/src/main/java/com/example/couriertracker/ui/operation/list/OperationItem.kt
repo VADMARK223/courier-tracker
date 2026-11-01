@@ -36,8 +36,9 @@ fun OperationItem(
     modifier: Modifier = Modifier
 ) {
     val operation = item.operation
+    val category = item.category
 
-    val amount = if (operation.type == OperationType.INCOME) {
+    val amount = if (category.type == OperationType.INCOME) {
         operation.amount
     } else {
         -operation.amount
@@ -79,7 +80,7 @@ fun OperationItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = formatMoney(amount), style = MaterialTheme.typography.bodyLarge)
 
-                OperationTypeIcon(operation.type == OperationType.INCOME)
+                OperationTypeIcon(category.type == OperationType.INCOME)
 
                 IconButton(onClick = { onDelete(operation) }) {
                     Icon(

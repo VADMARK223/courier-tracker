@@ -18,7 +18,7 @@ import com.example.couriertracker.data.model.slot.Slot
     ],
     version = 3
 )
-//@TypeConverters
+
 @ColumnTypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun serviceDao(): ServiceDao

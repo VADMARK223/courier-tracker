@@ -47,6 +47,9 @@ fun AddOperationSheet(
 ) {
     val operationType by viewModel.lastOperationType.collectAsStateWithLifecycle(initialValue = OperationType.EXPENSE)
 
+    val services by viewModel.getServices().collectAsStateWithLifecycle(emptyList())
+    var selectedServiceId by remember { mutableStateOf<Long?>(null) }
+
     val categories by viewModel.getRepositories(operationType)
         .collectAsStateWithLifecycle(emptyList())
 
@@ -70,12 +73,33 @@ fun AddOperationSheet(
         })
 
         HorizontalDivider()
+        Text(
+            text = "Счета:",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        services.forEach { service ->
+            Row(
+                modifier = Modifier.clickable {
+                    selectedServiceId = service.id
+                },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = selectedServiceId == service.id,
+                    onClick = {
+                        selectedServiceId = service.id
+                    }
+                )
 
+                Text(service.name)
+            }
+        }
+
+        HorizontalDivider()
         Text(
             text = "Категории:",
             style = MaterialTheme.typography.bodyMedium
         )
-
         categories.forEach { category ->
             Row(
                 modifier = Modifier.clickable {
@@ -123,14 +147,20 @@ fun AddOperationSheet(
         }
 
         val addState = when {
-            amount.isBlank() -> AddItemState(
+
+            selectedServiceId == null -> AddItemState(
                 isValid = false,
-                errorText = "Введите сумму"
+                errorText = "Выберите счет"
             )
 
             selectedCategoryId == null -> AddItemState(
                 isValid = false,
                 errorText = "Выберите категорию"
+            )
+
+            amount.isBlank() -> AddItemState(
+                isValid = false,
+                errorText = "Введите сумму"
             )
 
             else -> AddItemState(isValid = true)
@@ -142,12 +172,13 @@ fun AddOperationSheet(
             onClick = {
                 val amountInRubles = amount.toLongOrNull()
 
-                if (amountInRubles != null) {
+                if (amountInRubles != null && selectedServiceId != null && selectedCategoryId != null) {
                     val operation = Operation(
                         id = 0,
-                        type = operationType,
+                        serviceId = selectedServiceId!!,
+                        categoryId = selectedCategoryId!!,
                         amount = amountInRubles * 100,
-                        categoryId = selectedCategoryId,
+
                         date = date.toEpochDay()
                     )
 

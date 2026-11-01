@@ -22,7 +22,7 @@ fun ServicesList(
     ) {
         if (services.isEmpty()) {
             Text(
-                text = "Список сервисов / счетов пуст",
+                text = "Список счетов пуст",
                 modifier = Modifier.align(Alignment.Center),
                 style = MaterialTheme.typography.bodyLarge
             )

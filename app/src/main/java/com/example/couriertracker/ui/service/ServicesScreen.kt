@@ -9,7 +9,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -22,14 +21,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.couriertracker.data.model.Service
 import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.data.repository.SettingsRepository
 import com.example.couriertracker.ui.service.dialog.DeleteServiceDialog
 import com.example.couriertracker.ui.service.list.ServicesList
-import com.example.couriertracker.ui.service.sheet.AddServiceSheet
+import com.example.couriertracker.ui.service.sheet.AddServiceSheetRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,13 +40,8 @@ fun ServicesScreen(
     var serviceToDelete by remember { mutableStateOf<Service?>(null) }
     var showAddServiceSheet by remember { mutableStateOf(false) }
 
-    val viewModel: ServicesViewModel = viewModel(
-        factory = viewModelFactory {
-            initializer {
-                ServicesViewModel(repository, settingsRepository)
-            }
-        }
-    )
+    val viewModel: ServicesViewModel =
+        viewModel { ServicesViewModel(repository, settingsRepository) }
     val services by viewModel.services.collectAsStateWithLifecycle(emptyList())
 
     LaunchedEffect(openAddSheet) {
@@ -63,7 +55,7 @@ fun ServicesScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Сервисы / Счета")
+                    Text("Счета")
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -104,17 +96,6 @@ fun ServicesScreen(
     }
 
     if (showAddServiceSheet) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                showAddServiceSheet = false
-            }
-        ) {
-            AddServiceSheet(
-                onSave = { service ->
-                    viewModel.saveService(service)
-                    showAddServiceSheet = false
-                }
-            )
-        }
+        AddServiceSheetRoute(repository = repository, onDismiss = { showAddServiceSheet = false })
     }
 }

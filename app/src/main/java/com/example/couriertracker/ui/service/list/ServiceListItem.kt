@@ -2,7 +2,7 @@ package com.example.couriertracker.ui.service.list
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,6 +14,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.couriertracker.data.model.Service
+import com.example.couriertracker.util.toMoneyString
+import com.example.couriertracker.util.toRublesString
 
 @Composable
 fun ServiceListItem(
@@ -51,29 +54,43 @@ fun ServiceListItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Text(
+                text = item.name,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+            Row (verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = item.balance.toMoneyString(),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                IconButton(onClick = { onDeleteClick(item) }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Удалить слот",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
 
-            Column(
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-
+            /*Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
                     text = item.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
-
-
             }
 
-            IconButton(
-                onClick = { onDeleteClick(item) }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Удалить слот",
-                    tint = MaterialTheme.colorScheme.error
+            Column {
+                Text(
+                    text = item.balance.toString(),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
                 )
-            }
+
+
+            }*/
         }
     }
 }

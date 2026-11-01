@@ -8,11 +8,11 @@ data class Operation(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
 
-    val slotId: Long? = null,
+    val serviceId: Long,
+    val categoryId: Long,
 
-    val type: OperationType,
     val amount: Long,
     val date: Long,
 
-    val categoryId: Long? = null
+    val slotId: Long? = null
 )

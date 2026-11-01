@@ -12,6 +12,9 @@ interface ServiceDao {
     @Query("SELECT * FROM services ORDER BY name")
     fun getAll(): Flow<List<Service>>
 
+    @Query("SELECT * FROM services WHERE name = :name LIMIT 1")
+    suspend fun getServiceByName(name: String): Service?
+
     @Insert
     suspend fun insert(service: Service)
 

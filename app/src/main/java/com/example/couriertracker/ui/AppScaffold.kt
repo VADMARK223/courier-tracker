@@ -56,10 +56,10 @@ fun AppScaffold(
                     icon = {
                         Icon(
                             imageVector = Icons.Rounded.Storefront,
-                            contentDescription = "Сервисы"
+                            contentDescription = "Счета"
                         )
                     },
-                    label = { Text("Сервисы") }
+                    label = { Text("Счета") }
                 )
 
                 NavigationBarItem(
@@ -86,7 +86,7 @@ fun AppScaffold(
                     label = { Text("Операции") }
                 )
 
-                NavigationBarItem(
+                /*NavigationBarItem(
                     selected = currentScreen == Slots,
                     onClick = onSlotClick,
                     icon = {
@@ -96,7 +96,7 @@ fun AppScaffold(
                         )
                     },
                     label = { Text("Слоты") }
-                )
+                )*/
             }
         },
         content = content

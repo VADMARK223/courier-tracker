@@ -81,7 +81,7 @@ internal fun MainScreenContent(
 
     // TODO: Long переделать в BigInteger
     val balance: Long = operations.sumOf { item ->
-        if (item.operation.type == OperationType.INCOME) {
+        if (item.category.type == OperationType.INCOME) {
             item.operation.amount
         } else {
             -item.operation.amount

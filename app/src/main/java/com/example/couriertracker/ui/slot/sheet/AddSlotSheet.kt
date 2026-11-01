@@ -105,7 +105,7 @@ fun AddSlotSheet(
     val slotValidation = if (selectedService == null) {
         AddItemState(
             isValid = false,
-            errorText = "Необходимо выбрать сервис"
+            errorText = "Необходимо выбрать счет"
         )
     } else {
         val duration = Duration.between(startTime, endTime)
@@ -156,7 +156,7 @@ fun AddSlotSheet(
                     onClick = { onAddServiceClick() },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Добавить сервис")
+                    Text("Добавить счет")
                 }
             } else {
                 OutlinedTextField(

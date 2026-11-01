@@ -11,5 +11,5 @@ data class OperationWithCategory (
         parentColumns = ["categoryId"],
         entityColumns = ["id"]
     )
-    val category: Category?
+    val category: Category
 )

@@ -4,6 +4,7 @@ import com.example.couriertracker.data.database.CategoryDao
 import com.example.couriertracker.data.database.OperationDao
 import com.example.couriertracker.data.database.ServiceDao
 import com.example.couriertracker.data.database.SlotDao
+import com.example.couriertracker.data.exception.ServiceAlreadyExistsException
 import com.example.couriertracker.data.model.Category
 import com.example.couriertracker.data.model.Service
 import com.example.couriertracker.data.model.operation.Operation
@@ -24,6 +25,10 @@ class DefaultDataRepository(
     override val slotWithService: Flow<List<SlotWithService>> = slotDao.getAllWithService()
 
     override suspend fun insertService(service: Service) {
+        if (serviceDao.getServiceByName(service.name) != null) {
+            throw ServiceAlreadyExistsException()
+        }
+
         serviceDao.insert(service)
     }
 

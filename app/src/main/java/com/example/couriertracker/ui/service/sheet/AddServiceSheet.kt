@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -14,25 +15,30 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.couriertracker.data.model.Service
-import com.example.couriertracker.ui.common.state.AddItemState
-import com.example.couriertracker.ui.components.AddItemWarning
+import com.example.couriertracker.util.toKopecksOrNull
 
 @Composable
 fun AddServiceSheet(
     onSave: (Service) -> Unit,
+    isSaving: Boolean = false
 ) {
+    var balance by remember { mutableStateOf("0") }
     var name by remember { mutableStateOf("") }
+    var isTouched by remember { mutableStateOf(false) }
 
-    val addState = if (name.isNotBlank()) {
-        AddItemState(isValid = true)
+    val isValid = name.isNotBlank()
+    val showError = isTouched && !isValid
+
+    val balanceInKopecks = if (balance.isBlank()) {
+        0L
     } else {
-        AddItemState(
-            isValid = false,
-            errorText = "Имя сервиса / счета пустое"
-        )
+        balance.toKopecksOrNull()
     }
+
+    val isBalanceValid = balanceInKopecks != null
 
     Column(
         modifier = Modifier.padding(
@@ -40,30 +46,65 @@ fun AddServiceSheet(
             end = 24.dp,
             bottom = 24.dp
         ),
-
-        verticalArrangement = Arrangement.spacedBy(16.dp) // Одинаковые отступы между элементами
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "Добавление сервиса / счета",
+            text = "Добавление счета",
             style = MaterialTheme.typography.headlineMedium
+        )
+
+
+        OutlinedTextField(
+            value = balance,
+            onValueChange = { balance = it },
+            label = { Text("Начальный баланс") },
+            placeholder = { Text("0") },
+            suffix = { Text("₽") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal
+            ),
+            isError = !isBalanceValid,
+            supportingText = {
+                Text(
+                    if (!isBalanceValid) "Некорректная сумма"
+                    else "\u00A0"
+                )
+            },
+            modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
             value = name,
-            onValueChange = { name = it },
-            label = { Text("Введите имя сервиса / счета") },
-            singleLine = true, // Чтобы название не переносилось на много строк при случайном Enter
+            onValueChange = {
+                name = it
+                isTouched = true
+            },
+            label = {
+                Text("Введите имя счета")
+            },
+            singleLine = true,
+            isError = showError,
+            supportingText = {
+                Text(
+                    text = if (showError) {
+                        "Название не может быть пустым"
+                    } else {
+                        "\u00A0"
+                    }
+                )
+            },
             modifier = Modifier.fillMaxWidth()
         )
 
-        AddItemWarning(addState)
-
         Button(
-            onClick = { onSave(Service(name = name.trim())) },
-            enabled = addState.isValid,
+            onClick = {
+                onSave(Service(balance = balanceInKopecks ?: 0L, name = name.trim()))
+            },
+            enabled = isValid && !isSaving,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Добавить")
+            Text(if (isSaving) "Сохранение..." else "Сохранить")
         }
     }
 }
