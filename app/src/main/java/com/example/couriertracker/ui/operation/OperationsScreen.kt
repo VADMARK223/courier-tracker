@@ -23,8 +23,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.data.repository.SettingsRepository
+import com.example.couriertracker.ui.category.sheet.AddCategorySheetRoute
 import com.example.couriertracker.ui.operation.list.OperationsList
-import com.example.couriertracker.ui.service.sheet.AddServiceSheet
+import com.example.couriertracker.ui.operation.sheet.AddOperationSheet
 import com.example.couriertracker.ui.service.sheet.AddServiceSheetRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,6 +47,7 @@ fun OperationsScreen(
     val operations by repository.operationsWithCategory.collectAsStateWithLifecycle(emptyList())
 
     var showAddServiceSheet by remember { mutableStateOf(false) }
+    var showAddCategorySheet by remember { mutableStateOf(false) }
     var showAddOperationSheet by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -87,7 +89,7 @@ fun OperationsScreen(
                         showAddServiceSheet = true
                     },
                     onAddCategory = {
-//                        showAddServiceSheet = true
+                        showAddCategorySheet = true
                     },
                     modifier = Modifier
                         .fillMaxSize()
@@ -105,23 +107,30 @@ fun OperationsScreen(
     )
 
     if (showAddServiceSheet) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                showAddServiceSheet = false
-            }
-        ) {
-            AddServiceSheet(
-                onSave = { service ->
-                    viewModel.saveService(service)
-                    showAddServiceSheet = false
-                }
-            )
-        }
-    }
-
-    if (showAddServiceSheet) {
         AddServiceSheetRoute(
             repository = repository,
             onDismiss = { showAddServiceSheet = false })
+    }
+
+    if (showAddCategorySheet) {
+        AddCategorySheetRoute(
+            repository = repository,
+            onDismiss = { showAddCategorySheet = false })
+    }
+
+    if (showAddOperationSheet) {
+        ModalBottomSheet(
+            onDismissRequest = {
+//                viewModel.resetSaveState()
+                showAddOperationSheet = false
+            }
+        ) {
+            AddOperationSheet(
+                viewModel = viewModel,
+                onSaved = {
+                    showAddOperationSheet = false
+                }
+            )
+        }
     }
 }

@@ -26,7 +26,10 @@ import com.example.couriertracker.ui.components.AddItemWarning
 import com.example.couriertracker.ui.components.OperationTypeSelector
 
 @Composable
-fun AddCategorySheet(viewModel: CategoriesScreenViewModel, onSaved: () -> Unit) {
+fun AddCategorySheet(
+    onSave: (Category) -> Unit,
+    isSaving: Boolean = false
+) {
     var name by remember { mutableStateOf("") }
 
     val addState = if (name.isNotBlank()) {
@@ -69,19 +72,15 @@ fun AddCategorySheet(viewModel: CategoriesScreenViewModel, onSaved: () -> Unit) 
 
         Button(
             onClick = {
-                viewModel.saveCategory(
-                    Category(
-                        name = name.trim(),
-                        type = categoryType
-                    )
-                )
-
-                onSaved() // TODO: доделать нормально
+                onSave(Category(
+                    name = name.trim(),
+                    type = categoryType
+                ))
             },
-            enabled = name.isNotBlank(),
+            enabled = name.isNotBlank() && !isSaving,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Добавить")
+            Text(if (isSaving) "Сохранение..." else "Сохранить")
         }
     }
 }

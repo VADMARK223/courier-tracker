@@ -45,7 +45,7 @@ fun AddServiceSheetRoute(
                 } catch (e: ServiceAlreadyExistsException) {
                     isSaving = false
                     snackbarHostState.showSnackbar(e.message.orEmpty())
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     isSaving = false
                     snackbarHostState.showSnackbar("Не удалось сохранить счет")
                 } finally {

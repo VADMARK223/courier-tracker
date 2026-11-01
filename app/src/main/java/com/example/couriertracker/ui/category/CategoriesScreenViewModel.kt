@@ -17,16 +17,6 @@ class CategoriesScreenViewModel(
         return repository.getCategories()
     }
 
-    fun saveCategory(category: Category) {
-        viewModelScope.launch {
-            try {
-                repository.insertCategory(category)
-            } catch (e: Exception) {
-                Log.e(TAG_LOGCAT, "Error saveCategory: = ${e.message}")
-            }
-        }
-    }
-
     fun deleteCategory(category: Category) {
         viewModelScope.launch {
             repository.deleteCategory(category)
