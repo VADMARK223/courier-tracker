@@ -9,6 +9,16 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ServiceDao {
+    @Query("""
+        UPDATE services
+        SET balance = balance + :delta
+        WHERE id = :serviceId
+    """)
+    suspend fun updateBalance(
+        serviceId: Long,
+        delta: Long
+    ): Int
+
     @Query("SELECT * FROM services ORDER BY name")
     fun getAll(): Flow<List<Service>>
 

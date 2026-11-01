@@ -1,7 +1,9 @@
 package com.example.couriertracker.ui.operation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.couriertracker.AppConfig.TAG_LOGCAT
 import com.example.couriertracker.data.model.Category
 import com.example.couriertracker.data.model.Service
 import com.example.couriertracker.data.model.operation.Operation
@@ -67,9 +69,15 @@ class OperationsScreenViewModel(
         }
     }
 
-    fun saveOperation(operation: Operation) {
+    fun saveOperation(operation: Operation,
+                      onSuccess: () -> Unit) {
         viewModelScope.launch {
-            repository.addOperation(operation)
+            try {
+                repository.addOperation(operation)
+                onSuccess()
+            } catch (e: Exception) {
+                Log.d(TAG_LOGCAT, "Ошибка сохранения операции", e)
+            }
         }
     }
 

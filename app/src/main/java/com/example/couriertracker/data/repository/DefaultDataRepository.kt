@@ -1,5 +1,7 @@
 package com.example.couriertracker.data.repository
 
+import androidx.room3.withWriteTransaction
+import com.example.couriertracker.data.database.AppDatabase
 import com.example.couriertracker.data.database.CategoryDao
 import com.example.couriertracker.data.database.OperationDao
 import com.example.couriertracker.data.database.ServiceDao
@@ -15,6 +17,7 @@ import com.example.couriertracker.data.model.slot.SlotWithService
 import kotlinx.coroutines.flow.Flow
 
 class DefaultDataRepository(
+    private val db: AppDatabase,
     private val serviceDao: ServiceDao,
     private val slotDao: SlotDao,
     private val categoryDao: CategoryDao,
@@ -69,7 +72,29 @@ class DefaultDataRepository(
     }
 
     override suspend fun addOperation(operation: Operation) {
-        operationDao.insert(operation)
+        db.withWriteTransaction {
+            val category = categoryDao.getById(
+                operation.categoryId
+            ) ?: error("Категория не найдена")
+
+            val delta = when (category.type) {
+                OperationType.INCOME -> operation.amount
+                OperationType.EXPENSE -> -operation.amount
+            }
+
+            val updated = serviceDao.updateBalance(
+                operation.serviceId,
+                delta
+            )
+
+            check(updated == 1) {
+                "Счёт не найден"
+            }
+
+//            error("Тест отката транзакции")
+
+            operationDao.insert(operation)
+        }
     }
 
     override suspend fun deleteOperation(operation: Operation) {

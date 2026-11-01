@@ -205,10 +205,9 @@ fun AddOperationSheet(
                         date = date.toEpochDay()
                     )
 
-                    viewModel.saveOperation(operation)
                     viewModel.saveLastSelectedServiceIdForOperation(selectedServiceId!!)
-
-                    onSaved()
+                    viewModel.saveOperation(operation, onSaved)
+//                    onSaved()
                 }
             },
             enabled = addState.isValid,

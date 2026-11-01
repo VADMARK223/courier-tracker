@@ -17,6 +17,9 @@ interface CategoryDao {
     @Query("SELECT * FROM categories WHERE type = :type ORDER BY name")
     fun getByType(type: OperationType): Flow<List<Category>>
 
+    @Query("SELECT * FROM categories WHERE id = :id")
+    suspend fun getById(id: Long): Category?
+
     @Insert
     suspend fun insert(category: Category)
 

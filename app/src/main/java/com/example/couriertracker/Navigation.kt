@@ -87,6 +87,7 @@ fun MainNavigation() {
 
     val repository = remember {
         DefaultDataRepository(
+            db = database,
             database.serviceDao(),
             database.slotDao(),
             database.categoryDao(),
