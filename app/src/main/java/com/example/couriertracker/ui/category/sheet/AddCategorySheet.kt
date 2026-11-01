@@ -28,7 +28,8 @@ import com.example.couriertracker.ui.components.OperationTypeSelector
 @Composable
 fun AddCategorySheet(
     onSave: (Category) -> Unit,
-    isSaving: Boolean = false
+    isSaving: Boolean = false,
+    type: OperationType = OperationType.EXPENSE
 ) {
     var name by remember { mutableStateOf("") }
 
@@ -41,7 +42,7 @@ fun AddCategorySheet(
         )
     }
 
-    var categoryType by remember { mutableStateOf(OperationType.EXPENSE) }
+    var categoryType by remember { mutableStateOf(type) }
 
     Column(modifier = Modifier.padding(horizontal = 25.dp)) {
         Row(

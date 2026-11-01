@@ -25,7 +25,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +35,7 @@ import com.example.couriertracker.data.model.operation.Operation
 import com.example.couriertracker.data.model.operation.OperationType
 import com.example.couriertracker.ui.common.state.AddItemState
 import com.example.couriertracker.ui.components.AddItemWarning
+import com.example.couriertracker.ui.components.CreateItemButton
 import com.example.couriertracker.ui.components.OperationTypeSelector
 import com.example.couriertracker.ui.operation.OperationsScreenViewModel
 import java.time.Instant
@@ -47,6 +47,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun AddOperationSheet(
     viewModel: OperationsScreenViewModel,
+    onAddCategory: (OperationType) -> Unit,
     onSaved: () -> Unit,
 ) {
     val operationType by viewModel.lastOperationType.collectAsStateWithLifecycle(initialValue = OperationType.EXPENSE)
@@ -130,6 +131,13 @@ fun AddOperationSheet(
                 Text(category.name)
             }
         }
+
+        CreateItemButton(
+            text = "Создать категорию",
+            onClick = { onAddCategory(operationType) },
+            modifier = Modifier.fillMaxWidth(),
+            isPrimary = categories.isEmpty()
+        )
 
         OutlinedTextField(
             value = amount,

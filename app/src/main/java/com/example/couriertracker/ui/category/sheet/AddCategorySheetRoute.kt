@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.couriertracker.data.model.Category
+import com.example.couriertracker.data.model.operation.OperationType
 import com.example.couriertracker.data.repository.DataRepository
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
@@ -25,7 +26,8 @@ import kotlin.coroutines.cancellation.CancellationException
 @Composable
 fun AddCategorySheetRoute(
     repository: DataRepository,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    type: OperationType = OperationType.EXPENSE
 ) {
     val viewModel: AddCategoryViewModel = viewModel { AddCategoryViewModel(repository) }
     val scope = rememberCoroutineScope()
@@ -66,7 +68,7 @@ fun AddCategorySheetRoute(
         Box(
             modifier = Modifier.fillMaxWidth()
         ) {
-            AddCategorySheet(onSave = onSave, isSaving = isSaving)
+            AddCategorySheet(onSave = onSave, isSaving = isSaving, type = type)
 
             SnackbarHost(
                 hostState = snackbarHostState,

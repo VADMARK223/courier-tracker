@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.couriertracker.data.model.operation.OperationType
 import com.example.couriertracker.data.repository.DataRepository
 import com.example.couriertracker.data.repository.SettingsRepository
 import com.example.couriertracker.ui.category.sheet.AddCategorySheetRoute
@@ -47,7 +48,7 @@ fun OperationsScreen(
     val operations by repository.operationsWithCategory.collectAsStateWithLifecycle(emptyList())
 
     var showAddServiceSheet by remember { mutableStateOf(false) }
-    var showAddCategorySheet by remember { mutableStateOf(false) }
+    var addCategoryTypeSheet by remember { mutableStateOf<OperationType?>(null) }
     var showAddOperationSheet by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -89,7 +90,7 @@ fun OperationsScreen(
                         showAddServiceSheet = true
                     },
                     onAddCategory = {
-                        showAddCategorySheet = true
+                        addCategoryTypeSheet = OperationType.EXPENSE
                     },
                     modifier = Modifier
                         .fillMaxSize()
@@ -112,10 +113,12 @@ fun OperationsScreen(
             onDismiss = { showAddServiceSheet = false })
     }
 
-    if (showAddCategorySheet) {
+    if (addCategoryTypeSheet != null) {
         AddCategorySheetRoute(
             repository = repository,
-            onDismiss = { showAddCategorySheet = false })
+            onDismiss = { addCategoryTypeSheet = null },
+            type = addCategoryTypeSheet!!
+        )
     }
 
     if (showAddOperationSheet) {
@@ -127,6 +130,9 @@ fun OperationsScreen(
         ) {
             AddOperationSheet(
                 viewModel = viewModel,
+                onAddCategory = { type ->
+                    addCategoryTypeSheet = type
+                },
                 onSaved = {
                     showAddOperationSheet = false
                 }
