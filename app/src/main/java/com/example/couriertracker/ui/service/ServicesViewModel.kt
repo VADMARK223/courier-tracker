@@ -16,7 +16,7 @@ class ServicesViewModel(
     fun deleteService(service: Service) {
         viewModelScope.launch {
             repository.deleteService(service)
-            settingsRepository.clearLastSelectedServiceIdIfMatches(service.id)
+            settingsRepository.clearLastSelectedServiceIdForOperation(service.id)
         }
     }
 }

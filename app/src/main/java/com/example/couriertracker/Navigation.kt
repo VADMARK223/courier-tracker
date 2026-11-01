@@ -242,6 +242,7 @@ fun MainNavigation() {
                                     onBack = {
                                         backStack.removeLastOrNull()
                                     },
+                                    repository = settingsRepository
                                 )
                             }
                         }

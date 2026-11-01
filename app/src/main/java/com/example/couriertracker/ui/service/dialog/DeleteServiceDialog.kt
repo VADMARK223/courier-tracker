@@ -15,7 +15,7 @@ fun DeleteServiceDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(text = "Удаление сервиса") },
-        text = { Text(text = "Удалить сервис «${service.name}»?\nВсе связанные с ним слоты также будут удалены.") },
+        text = { Text(text = "Удалить сервис «${service.name}»?\nВсе связанные с ним слоты и операции также будут удалены.") },
         confirmButton = {
             TextButton(
                 onClick = {

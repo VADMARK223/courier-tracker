@@ -22,6 +22,7 @@ class SettingsRepository(
     private val lastSelectedScreenKey = stringPreferencesKey("last_selected_screen")
 
     private val lastOperationTypeKey = stringPreferencesKey("last_operation_type")
+    private val lastOperationServiceKey = longPreferencesKey("last_operation_service")
     private val lastSelectedServiceKey = longPreferencesKey("last_selected_service")
 
     private val preferences: Flow<Preferences> =
@@ -56,6 +57,26 @@ class SettingsRepository(
                 ?: OperationType.EXPENSE
         }
 
+    // Последняя услуга, на которой была совершена операция
+    val lastOperationServiceId: Flow<Long?> =
+        preferences.map { preferences ->
+            preferences[lastOperationServiceKey]
+        }
+
+    suspend fun saveLastSelectedServiceIdForOperation(serviceId: Long) {
+        context.dataStore.edit { preferences ->
+            preferences[lastOperationServiceKey] = serviceId
+        }
+    }
+
+    suspend fun clearLastSelectedServiceIdForOperation(serviceId: Long) {
+        context.dataStore.edit { preferences ->
+            if (preferences[lastOperationServiceKey] == serviceId) {
+                preferences.remove(lastOperationServiceKey)
+            }
+        }
+    }
+
     val lastSelectedServiceId: Flow<Long?> =
         preferences.map { preferences ->
             preferences[lastSelectedServiceKey]
@@ -85,11 +106,27 @@ class SettingsRepository(
         }
     }
 
-    suspend fun clearLastSelectedServiceIdIfMatches(serviceId: Long) {
+    val debugPreferences: Flow<Map<String, String>> =
+        preferences.map { prefs ->
+            prefs.asMap()
+                .mapKeys { (key, _) -> key.name }
+                .mapValues { (_, value) -> value.toString() }
+        }
+
+    suspend fun removePreference(keyName: String) {
         context.dataStore.edit { preferences ->
-            if (preferences[lastSelectedServiceKey] == serviceId) {
-                preferences.remove(lastSelectedServiceKey)
+            val key = preferences.asMap().keys
+                .firstOrNull { it.name == keyName }
+
+            if (key != null) {
+                preferences.remove(key)
             }
+        }
+    }
+
+    suspend fun clearAllPreferences() {
+        context.dataStore.edit { preferences ->
+            preferences.clear()
         }
     }
 }

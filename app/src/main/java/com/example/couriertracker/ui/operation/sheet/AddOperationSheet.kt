@@ -3,7 +3,9 @@ package com.example.couriertracker.ui.operation.sheet
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -19,9 +21,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +53,12 @@ fun AddOperationSheet(
 
     val services by viewModel.getServices().collectAsStateWithLifecycle(emptyList())
     var selectedServiceId by remember { mutableStateOf<Long?>(null) }
+    val savedServiceId by viewModel.lastOperationServiceId
+        .collectAsStateWithLifecycle(initialValue = null)
+
+    LaunchedEffect(savedServiceId) {
+        selectedServiceId = savedServiceId
+    }
 
     val categories by viewModel.getRepositories(operationType)
         .collectAsStateWithLifecycle(emptyList())
@@ -66,11 +76,14 @@ fun AddOperationSheet(
             text = "Добавление операции",
             style = MaterialTheme.typography.headlineMedium
         )
+        Spacer(modifier = Modifier.height(8.dp))
 
         OperationTypeSelector(selectedType = operationType, onTypeSelected = { type ->
             viewModel.saveLastOperationType(type)
             selectedCategoryId = null
         })
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         HorizontalDivider()
         Text(
@@ -133,6 +146,8 @@ fun AddOperationSheet(
             modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
+
         OutlinedButton(
             onClick = {
                 showDatePicker = true
@@ -183,6 +198,7 @@ fun AddOperationSheet(
                     )
 
                     viewModel.saveOperation(operation)
+                    viewModel.saveLastSelectedServiceIdForOperation(selectedServiceId!!)
 
                     onSaved()
                 }

@@ -44,6 +44,14 @@ class OperationsScreenViewModel(
         }
     }
 
+    val lastOperationServiceId: Flow<Long?> = settingsRepository.lastOperationServiceId
+
+    fun saveLastSelectedServiceIdForOperation(serviceId: Long) {
+        viewModelScope.launch {
+            settingsRepository.saveLastSelectedServiceIdForOperation(serviceId)
+        }
+    }
+
     fun getServices(): Flow<List<Service>> {
         return repository.getServices()
     }

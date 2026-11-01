@@ -16,7 +16,7 @@ import com.example.couriertracker.data.model.slot.Slot
         Category::class,
         Operation::class
     ],
-    version = 3
+    version = 4
 )
 
 @ColumnTypeConverters(Converters::class)
